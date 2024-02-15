@@ -1,0 +1,29 @@
+{
+  "name": "aut",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/puppeteer": "^7.0.4",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.1",
+    "fs": "^0.0.1-security",
+    "node-geolocation": "^1.15.14",
+    "nodemailer": "^6.9.9",
+    "path": "^0.12.7",
+    "pdf-lib": "^1.17.1",
+    "pdf-merger-js": "^5.1.1",
+    "pg": "^8.11.3",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-recaptcha": "^3.6.8",
+    "puppeteer-report": "^3.1.0",
+    "puppeteer-screen-recorder": "^2.1.2",
+    "url": "^0.11.3"
+  }
+}
