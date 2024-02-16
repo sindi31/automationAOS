@@ -2,8 +2,8 @@ const data = {
     QTY: "1",
     isBookingDate: "false",
     point: "5000",
-    coupon: "HOME001",
-    payWith: "Credit Card"
+    coupon: "TESTING132",
+    payWith: "BRI VA"
 }
 
 export default data;

@@ -41,7 +41,7 @@ const starthtml =
                            <td style="padding-top:5px; border-top:5px solid #0033A0; font-size: 11px;">
                               <p style="font-size:13px"> <b>TEST DETAIL</b> <br>
                               </p>
-                              <table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(0,51,160);">
+                              <table style="width: 100%; border-collapse: collapse;">
                                  <tbody>
 `;
 
@@ -249,7 +249,7 @@ const getBodyHtmlPage2 = async(custOrderDetail) => {
          </td>
       </tr>
       <tr class ="tbl-order">
-         <td colspan="4" style="padding:5px;border-bottom: 1px solid rgb(0,51,160);">
+         <td colspan="4" style="padding:5px;">
             <table style="text-align:center;width: 100%; border-collapse: collapse; border: 0.5px solid rgb(234, 234, 234);font-size: 9px">
                <th style="width:33%;">Before Order</th>
                <th style="width:33%;">After Order</th>

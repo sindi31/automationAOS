@@ -1,4 +1,5 @@
-import puppeteer from "puppeteer";
+// import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
 import dotenv from "dotenv";
 dotenv.config();
 import login from "./services/authentication.js";
@@ -48,7 +49,7 @@ import { sendMail } from "./utils/baseService.js";
     let indexOrder = "";
     let indexCancel = "";
 
-    const recorder = new PuppeteerScreenRecorder(browser); // Config is optional
+    const recorder = new PuppeteerScreenRecorder(page); // Config is optional
     const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
     await recorder.start(savePath);
 
@@ -124,8 +125,11 @@ import { sendMail } from "./utils/baseService.js";
                     // apply coupon in cart start
                     if (data.coupon != "") {
                         let useCouponResp = await useCoupon(page, data.coupon);
+                        // console.log(useCouponResp[0].status);
+
+
                         useCouponResponse = useCouponResp;
-                        if (useCouponResponse.status === 200) {
+                        if (useCouponResponse[0].status === 200) {
                             useCouponStatus = true;
                         } else {
                             useCouponStatus = false;
@@ -134,6 +138,9 @@ import { sendMail } from "./utils/baseService.js";
                     } else {
                         useCouponResponse = 'Tidak menggunakan kupon';
                     }
+                    
+                    // console.log(useCouponResponse[1].resUseCoupon[0].errorCondition);
+                    // await page.waitForTimeout(100000);
                     // apply coupon in cart end
 
                     orderResponse = await checkout(page, data.payWith, productType[i], browser); // proses order di halaman checkout
@@ -219,6 +226,7 @@ import { sendMail } from "./utils/baseService.js";
         };
 
         custOrderDetail[i] = {
+            location: location,
             productType: productType[i],
             productName: getProductResponse.data.name,
             productSKU: getProductResponse.data.sku,
@@ -262,7 +270,7 @@ import { sendMail } from "./utils/baseService.js";
             pointAfterCancel: poinCustAfterCancelResp,
 
             usedCoupon: data.coupon,
-            useCouponStatus: useCouponResponse.message
+            useCouponStatus: useCouponResponse[1].resUseCoupon.length ==0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition
         }
     }
 

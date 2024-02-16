@@ -148,7 +148,7 @@ const getBodyHtml = async(custOrderDetail,recapStatus,start, end, diff) => {
      </tr>
      <tr>
         <td  style="vertical-align: top; padding: 4px;font-size: 9px ">
-           Point
+           Point Usage
         </td>
         <td style="vertical-align: top; padding: 4px;font-size: 9px ">
            : ${custOrderDetail[i].usedPoint}
@@ -162,7 +162,7 @@ const getBodyHtml = async(custOrderDetail,recapStatus,start, end, diff) => {
      </tr>
      <tr>
         <td rowspan="5" style="border-bottom: 1px solid rgb(234, 234, 234);vertical-align: top; padding: 4px;font-size: 9px ">
-           Coupon
+           Coupon Usage
         </td>
         <td rowspan="5" style="border-bottom: 1px solid rgb(234, 234, 234);vertical-align: top; padding: 4px;font-size: 9px ">
            : ${custOrderDetail[i].usedCoupon}

@@ -7,7 +7,7 @@ dotenv.config();
 import cancelAdmin from "./admin.js";
 
 const cancelOrder = async (page, orderNumber, payment, orderID, browser) => {
-    console.log('cancelOrder processing')
+    // console.log('cancelOrder processing')
     let cancelResponse = '';
     if (payment.includes('VA') || payment.includes('Alfa')) {
         //go to transaction list
@@ -29,15 +29,16 @@ const cancelOrder = async (page, orderNumber, payment, orderID, browser) => {
         cancelResponse = await responseUrl(page, 'cancel');
         await page.waitForTimeout(5000);
     } else if (payment.includes('Credit')) {
-        console.log(page.url())
+        // console.log(page.url())
         // await page.goto("https://astraotoshop.com/checkout/credit-card");
         await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+        // await page.waitForTimeout(1000);
         const cancelCCButton = await page.waitForSelector(".sc-rq82e3-0.bYIQff");
         await cancelCCButton.click();
         cancelResponse = await responseUrl(page, 'cancel');
         await page.waitForTimeout(2000);
     } else if (payment.includes('GOPAY')) {
-        cancelResponse = await cancelAdmin(orderID, orderNumber);
+        cancelResponse = await cancelAdmin(orderID, orderNumber, browser);
         // await browser.close();
     }
     return cancelResponse

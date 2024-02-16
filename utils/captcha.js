@@ -13,7 +13,6 @@ puppeteer.use(
 
 
 const solveCaptcha = async (page) => {
-
     await page.solveRecaptchas();
 }
 

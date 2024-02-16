@@ -2,41 +2,45 @@ import puppeteer from "puppeteer-extra";
 import { responseUrl } from "../utils/baseService.js";
 import solveCaptcha from "../utils/captcha.js";
 
-const cancelAdmin = async (orderID, orderNumber) => {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: false,
-        args: ['--start-maximized']
-    });
-    const page = await browser.newPage();
-    const pages = await browser.pages();
-    if (pages.length > 1) {
-        await pages[0].close();
+const cancelAdmin = async (orderID, orderNumber, browser) => {
+    // const browser = await puppeteer.launch({
+    //     headless: false,
+    //     defaultViewport: false,
+    //     args: ['--start-maximized']
+    // });
+    const page2 = await browser.newPage();
+    // const pages = await browser.pages();
+    // if (pages.length > 1) {
+    //     await pages[0].close();
+    // }
+    await page2.goto('https://admin.astraotoshop.com/', { waitUntil: "networkidle2" })
+    // await page2.waitForTimeout(5000)
+
+    let isEmail = await page2.$eval("div[class='gx-d-flex gx-flex-column gx-align-items-center gx-mb-3'] h1", () => true).catch(() => false);
+    if (isEmail == true) {
+        const username = await page2.waitForXPath("//input[@id='basic_email']");
+        await username.type("it@aop.com");
+
+        const password = await page2.waitForXPath("//input[@id='basic_password']");
+        await password.type("A4OPB2c!!");
+        await page2.waitForTimeout(1000);
+
+        // That's it, a single line of code to solve reCAPTCHAs 🎉
+        await solveCaptcha(page2);
+        // await page.waitForTimeout(5000);
+
+        const loginButton = await page2.waitForXPath("//button[@type='submit']", { visible: true });
+
+        await loginButton.click();
+        // await page.waitForTimeout(1000);
+
+        await loginButton.click();
     }
-    await page.goto('https://admin.astraotoshop.com/', { waitUntil: 'load' })
-    await page.waitForTimeout(5000)
 
-    const username = await page.waitForXPath("//input[@id='basic_email']");
-    await username.type("it@aop.com");
+    await page2.waitForTimeout(3000);
 
-    const password = await page.waitForXPath("//input[@id='basic_password']");
-    await password.type("A4OPB2c!!");
-    await page.waitForTimeout(1000);
-
-    // That's it, a single line of code to solve reCAPTCHAs 🎉
-    await solveCaptcha(page);
-    // await page.waitForTimeout(5000);
-
-    const loginButton = await page.waitForXPath("//button[@type='submit']", { visible: true });
-
-    await loginButton.click();
-    // await page.waitForTimeout(1000);
-
-    await loginButton.click();
-    await page.waitForTimeout(3000);
-
-    await page.goto('https://admin.astraotoshop.com/sales/order/detail/' + orderID);
-    await page.waitForTimeout(2000);
+    await page2.goto('https://admin.astraotoshop.com/sales/order/detail/' + orderID);
+    await page2.waitForTimeout(2000);
 
 
     // // go to sales
@@ -65,37 +69,37 @@ const cancelAdmin = async (orderID, orderNumber) => {
     //     await lihatButton.click();
     //     await page.waitForTimeout(3000);
 
-    const recheckNumber = await page.$eval(".ant-typography.gx-m-0", el => el.textContent);
+    const recheckNumber = await page2.$eval(".ant-typography.gx-m-0", el => el.textContent);
     console.log('crosscheck >>>' + recheckNumber.replace('#', ''));
     // await page.waitForTimeout(2000);
 
     let cancelResponse = "";
     if (recheckNumber.replace('#', '') === orderNumber) {
 
-        let statusOrder = await page.$eval("div:nth-child(1) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(1) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(4) span:nth-child(1)", el => el.textContent);
+        let statusOrder = await page2.$eval("div:nth-child(1) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(1) div:nth-child(1) div:nth-child(2) div:nth-child(1) div:nth-child(4) span:nth-child(1)", el => el.textContent);
         // console.log('status order1: ' + statusOrder);
 
         while (statusOrder === 'Pending Payment') {
             try {
-                const tindakan = await page.waitForXPath("//span[normalize-space()='Tindakan Lain']");
+                const tindakan = await page2.waitForXPath("//span[normalize-space()='Tindakan Lain']");
                 await tindakan.click()
                 // console.log('tindakan')
 
-                await page.waitForTimeout(1000);
-                const batal = await page.waitForXPath("//span[normalize-space()='Batal']");
+                await page2.waitForTimeout(1000);
+                const batal = await page2.waitForXPath("//span[normalize-space()='Batal']");
                 await batal.click()
 
-                await page.waitForTimeout(1000);
-                const confirm = await page.waitForXPath("//span[normalize-space()='Ya, Batalkan Pesanan']");
+                await page2.waitForTimeout(1000);
+                const confirm = await page2.waitForXPath("//span[normalize-space()='Ya, Batalkan Pesanan']");
                 await confirm.click();
 
-                cancelResponse = await responseUrl(page, 'cancel');
-                
-                console.log(cancelResponse)
-                await page.waitForTimeout(2000);
+                cancelResponse = await responseUrl(page2, 'cancel');
 
-                const status = await page.waitForXPath("//span[normalize-space()='Canceled']", { visible: true });
-                const textStatus = await page.evaluate(el => {
+                console.log(cancelResponse)
+                await page2.waitForTimeout(2000);
+
+                const status = await page2.waitForXPath("//span[normalize-space()='Canceled']", { visible: true });
+                const textStatus = await page2.evaluate(el => {
                     return el.textContent;
                 }, status);
                 statusOrder = textStatus;
@@ -111,7 +115,8 @@ const cancelAdmin = async (orderID, orderNumber) => {
     }
     // }
 
-    await browser.close()
+
+    await page2.close()
     return cancelResponse
 
 };
