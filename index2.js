@@ -18,6 +18,7 @@ import { closeSync } from "fs";
 import { PuppeteerScreenRecorder } from "puppeteer-screen-recorder";
 import config from "./constanta/config.js";
 import { sendMail } from "./utils/baseService.js";
+import htmlPage2 from "./html/example.js";
 
 (async function main() {
     const browser = await puppeteer.launch({
@@ -126,8 +127,6 @@ import { sendMail } from "./utils/baseService.js";
                     if (data.coupon != "") {
                         let useCouponResp = await useCoupon(page, data.coupon);
                         // console.log(useCouponResp[0].status);
-
-
                         useCouponResponse = useCouponResp;
                         if (useCouponResponse[0].status === 200) {
                             useCouponStatus = true;
@@ -138,7 +137,7 @@ import { sendMail } from "./utils/baseService.js";
                     } else {
                         useCouponResponse = 'Tidak menggunakan kupon';
                     }
-                    
+
                     // console.log(useCouponResponse[1].resUseCoupon[0].errorCondition);
                     // await page.waitForTimeout(100000);
                     // apply coupon in cart end
@@ -185,32 +184,33 @@ import { sendMail } from "./utils/baseService.js";
             }
         } else {
             loginStatus = false;
+
         }
+
+        let detailProductAfterCancel = "";
+
 
         if (orderStatus === true) {
             const cancelOrderResp = await cancelOrder(page, orderResponse.data.orderNumber, data.payWith, orderResponse.data.id, browser);
             if (cancelOrderResp.status === 200) {
                 cancelStatus = true;
                 // get detail product after cancel
-                let detailProductAfterCancel = "";
-                if (productType[i] === "Layanan Bengkel") {
-                    detailProductAfterCancel = await newGetProductAfterProcess(getProductResponse.data.urlKey, productType[i], browser, getProductResponse.data.id, location);
-                } else {
-                    detailProductAfterCancel = await newGetProductAfterProcess(getProductResponse.data.urlKey, productType[i], browser);
-                }
-                detailProductAfterCancelResp = detailProductAfterCancel
-
-                if (productType[i] === "Layanan Bengkel") {
-                    indexCancel = detailProductAfterCancelResp.respMerchant.data.findIndex(x => x.code === addToCartResponse.merchantResponse.data[0].name);
-                }
-                // const backToHome = await page.goto(process.env.URL);
-                const backToHome = await page.goto(config.URL);
-
-
-                poinCustAfterCancelResp = await checkPointHomepage(page); // get point customer after cancel
             } else {
                 cancelStatus = false
             }
+
+            if (productType[i] === "Layanan Bengkel") {
+                detailProductAfterCancel = await newGetProductAfterProcess(getProductResponse.data.urlKey, productType[i], browser, getProductResponse.data.id, location);
+                indexCancel = detailProductAfterCancel.respMerchant.data.findIndex(x => x.code === addToCartResponse.merchantResponse.data[0].name);
+            } else {
+                detailProductAfterCancel = await newGetProductAfterProcess(getProductResponse.data.urlKey, productType[i], browser);
+            }
+            detailProductAfterCancelResp = detailProductAfterCancel
+
+            // const backToHome = await page.goto(process.env.URL);
+            const backToHome = await page.goto(config.URL);
+
+            poinCustAfterCancelResp = await checkPointHomepage(page); // get point customer after cancel
         }
 
         recapStatus[i] = {
@@ -243,7 +243,8 @@ import { sendMail } from "./utils/baseService.js";
             receiverPhone: orderResponse.data.receiverPhone ? orderResponse.data.receiverPhone : '',
             address: orderResponse.data.address,
             courier: orderResponse.data.shipmentMethod ? orderResponse.data.shipmentMethod.name + " - " + orderResponse.data.shipmentMethod.packages.name : 'It is not spareparts order',
-            shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail[1].value + orderResponse.data.paymentDetail.detail[2].value : '-',
+            // shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail[1].value + orderResponse.data.paymentDetail.detail[2].value : '-',
+            shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail : '-',
 
             initTotalQty: getProductResponse.data.totalQty,
             initAvailQty: getProductResponse.data.availableQty,
@@ -264,13 +265,15 @@ import { sendMail } from "./utils/baseService.js";
             afterCancelTotalSentOutlet: detailProductAfterCancelResp.respMerchant.data ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalSent : 'It is not product service order',
 
             balancePoint: initPoint,
-            usedPoint: usePointResponse.point ? usePointResponse.point : usePointResponse,
+            usedPoint: data.point,
+            // usedPoint: usePointResponse.point ? usePointResponse.point : usePointResponse,
             applyPoint: usePointResponse,
             poinAfterOrder: poinCustAfterOrderResp,
             pointAfterCancel: poinCustAfterCancelResp,
 
             usedCoupon: data.coupon,
-            useCouponStatus: useCouponResponse[1].resUseCoupon.length ==0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition
+            useCouponStatus: useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
+            useCouponData: useCouponResponse[1].discountDetail[0]?useCouponResponse[1].discountDetail[0] :''
         }
     }
 
@@ -285,13 +288,14 @@ import { sendMail } from "./utils/baseService.js";
     const htmlPage1 = await getBodyHtml(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
     const page1 = await generatePdf(htmlPage1, '1');
 
-    const htmlPage2 = await getBodyHtmlPage2(custOrderDetail);
-    const page2 = await generatePdf(htmlPage2, '2');
+    // const htmlPage2 = await getBodyHtmlPage2(custOrderDetail);
+    const htmlPage2Resp = await htmlPage2(custOrderDetail);
+    const page2 = await generatePdf(htmlPage2Resp, '2');
 
     let filePdf = [page1, page2];
     const docPath = await mergePdf(filePdf);
     console.log(docPath);
-    const filename = docPath.replace("./document/","");
+    const filename = docPath.replace("./document/", "");
     console.log(filename)
     await sendMail(filename, docPath);
     await browser.close();

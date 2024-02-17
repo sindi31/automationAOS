@@ -1,4 +1,4 @@
-import data from "./constanta/inputData.js";
+import data from "../constanta/inputData.js";
 
 const template = async(data, data2) => {
     const passed = '<i class="fa fa-check"></i>';

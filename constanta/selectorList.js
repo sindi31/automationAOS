@@ -86,4 +86,14 @@ const headerPageSelector ={
     homepage: "//div[@class='sc-1crxk01-0 MmIck']//button[1]//div[1]//span[1]//*[name()='svg']"
 }
 
-export {homepageSelector,loginSelector, plpSelector, shortcut, productDetailPage, cartPage, checkoutPage, orderPage, locationSelector, headerPageSelector };
+const adminSelector = {
+    fieldEmail: "//input[@id='basic_email']",
+    fieldPassword: "//input[@id='basic_password']",
+    loginButton:"//button[@type='submit']",
+    fieldOrderNumber: ".ant-typography.gx-m-0",
+    tindakanDropdown: "//span[normalize-space()='Tindakan Lain']",
+    cancelButton: "//span[normalize-space()='Batal']",
+    confirmButton: "//span[normalize-space()='Ya, Batalkan Pesanan']"
+}
+
+export {homepageSelector,loginSelector, plpSelector, shortcut, productDetailPage, cartPage, checkoutPage, orderPage, locationSelector, headerPageSelector,adminSelector };

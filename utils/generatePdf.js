@@ -34,15 +34,15 @@ const generatePdf = async (content, hal) => {
     let htmlFilePath = "";
     let pdfFilePath = "";
     if (hal === '1') {
-        await fs.promises.writeFile('page1.html', content);
+        await fs.promises.writeFile('html/page1.html', content);
         console.log('HTML file has been saved!');
-        htmlFilePath = 'page1.html';
+        htmlFilePath = '.html/page1.html';
         // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
         pdfFilePath = 'document/pdf-page1-' + new Date().toJSON().slice(0, 10) +'.pdf';
     } else {
-        await fs.promises.writeFile('page2.html', content);
+        await fs.promises.writeFile('html/page2.html', content);
         console.log('HTML file has been saved!');
-        htmlFilePath = 'page2.html';
+        htmlFilePath = '.html/page2.html';
         // pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.pdf';
         pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10) +'.pdf';
     }

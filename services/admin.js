@@ -1,6 +1,8 @@
 import puppeteer from "puppeteer-extra";
 import { responseUrl } from "../utils/baseService.js";
 import solveCaptcha from "../utils/captcha.js";
+import config from "../constanta/config.js";
+import { adminSelector } from "../constanta/selectorList.js";
 
 const cancelAdmin = async (orderID, orderNumber, browser) => {
     // const browser = await puppeteer.launch({
@@ -13,23 +15,23 @@ const cancelAdmin = async (orderID, orderNumber, browser) => {
     // if (pages.length > 1) {
     //     await pages[0].close();
     // }
-    await page2.goto('https://admin.astraotoshop.com/', { waitUntil: "networkidle2" })
+    await page2.goto(config.URL_ADMIN, { waitUntil: "networkidle2" })
     // await page2.waitForTimeout(5000)
 
     let isEmail = await page2.$eval("div[class='gx-d-flex gx-flex-column gx-align-items-center gx-mb-3'] h1", () => true).catch(() => false);
     if (isEmail == true) {
-        const username = await page2.waitForXPath("//input[@id='basic_email']");
-        await username.type("it@aop.com");
+        const username = await page2.waitForXPath(adminSelector.fieldEmail);
+        await username.type(config.ADMIN_EMAIL);
 
-        const password = await page2.waitForXPath("//input[@id='basic_password']");
-        await password.type("A4OPB2c!!");
+        const password = await page2.waitForXPath(adminSelector.fieldPassword);
+        await password.type(config.ADMIN_PASS);
         await page2.waitForTimeout(1000);
 
         // That's it, a single line of code to solve reCAPTCHAs 🎉
         await solveCaptcha(page2);
-        // await page.waitForTimeout(5000);
+        // await page2.waitForTimeout(8000);
 
-        const loginButton = await page2.waitForXPath("//button[@type='submit']", { visible: true });
+        const loginButton = await page2.waitForXPath(adminSelector.loginButton, { visible: true });
 
         await loginButton.click();
         // await page.waitForTimeout(1000);
@@ -39,7 +41,7 @@ const cancelAdmin = async (orderID, orderNumber, browser) => {
 
     await page2.waitForTimeout(3000);
 
-    await page2.goto('https://admin.astraotoshop.com/sales/order/detail/' + orderID);
+    await page2.goto(config.ADMIN_ORDER_DETAIL_BASE + orderID);
     await page2.waitForTimeout(2000);
 
 
@@ -69,7 +71,13 @@ const cancelAdmin = async (orderID, orderNumber, browser) => {
     //     await lihatButton.click();
     //     await page.waitForTimeout(3000);
 
-    const recheckNumber = await page2.$eval(".ant-typography.gx-m-0", el => el.textContent);
+    let isOrderNum = await page2.$eval(adminSelector.fieldOrderNumber, () => true).catch(() => false);
+    while (isOrderNum == false) {
+        await page2.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+        isOrderNum = await page2.$eval(adminSelector.fieldOrderNumber, () => true).catch(() => false);
+    }
+
+    const recheckNumber = await page2.$eval(adminSelector.fieldOrderNumber, el => el.textContent);
     console.log('crosscheck >>>' + recheckNumber.replace('#', ''));
     // await page.waitForTimeout(2000);
 
@@ -81,16 +89,16 @@ const cancelAdmin = async (orderID, orderNumber, browser) => {
 
         while (statusOrder === 'Pending Payment') {
             try {
-                const tindakan = await page2.waitForXPath("//span[normalize-space()='Tindakan Lain']");
+                const tindakan = await page2.waitForXPath(adminSelector.tindakanDropdown);
                 await tindakan.click()
                 // console.log('tindakan')
 
                 await page2.waitForTimeout(1000);
-                const batal = await page2.waitForXPath("//span[normalize-space()='Batal']");
+                const batal = await page2.waitForXPath(adminSelector.cancelButton);
                 await batal.click()
 
                 await page2.waitForTimeout(1000);
-                const confirm = await page2.waitForXPath("//span[normalize-space()='Ya, Batalkan Pesanan']");
+                const confirm = await page2.waitForXPath(adminSelector.confirmButton);
                 await confirm.click();
 
                 cancelResponse = await responseUrl(page2, 'cancel');
@@ -111,7 +119,7 @@ const cancelAdmin = async (orderID, orderNumber, browser) => {
                 console.log('error >>>' + error)
             }
         }
-        statusOrder
+         statusOrder
     }
     // }
 

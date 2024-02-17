@@ -1,4 +1,4 @@
-import { sendMail } from "./utils/baseService.js"
+import { sendMail } from "../utils/baseService.js"
 
 
 const filename = ["automation-result-2024-02-14T171622.pdf", "automation-result-2024-02-14T1712.mp4"]
