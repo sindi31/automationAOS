@@ -20,7 +20,7 @@ const starthtml =
         /* page-break-after works, as well */
      }
        body {
-          margin: 15px;
+          margin: 20px;
           padding: 0;
           color: #333;
           font-style: normal;

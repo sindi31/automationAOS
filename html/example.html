@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -7,19 +6,19 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
-   <link rel="stylesheet" href="style.css">
    <title>Automation Testing Result</title>
 </head>
 <style>
-@media print {
-    .pagebreak {
-       page-break-after: always;
-    }
+   @media print {
+      .pagebreak {
+         page-break-after: always;
+      }
 
-    /* page-break-after works, as well */
- }
+      /* page-break-after works, as well */
+   }
+
    body {
-      margin: 15px;
+      margin: 25px;
       padding: 0;
       color: #333;
       font-style: normal;
@@ -29,10 +28,10 @@
    }
 
    table,
-   validation {
+   validation,
+   summary {
       border-collapse: collapse;
       width: 100%;
-      margin: 10 auto;
    }
 
    .detail,
@@ -60,7 +59,29 @@
 
    }
 
-   .validation th {
+   .validation td {
+      text-align: center;
+      border: 1px solid lightgrey
+   }
+
+   .summary td {
+      font-size: 9px;
+      vertical-align: top;
+      padding-left: 5px;
+   }
+
+   .summary i {
+      font-size: 1.5em;
+   }
+
+   .detail td,
+   .flow td,
+   .validation td {
+      vertical-align: top;
+   }
+
+   .validation th,
+   .summary th {
       font-size: 9px;
       text-align: center;
       background-color: lightgrey;
@@ -69,859 +90,321 @@
       border: 1px solid lightgrey
    }
 
-   .validation td {
-      text-align: center;
-      border: 1px solid lightgrey
+   .summary th {
+      padding-left: 5px;
    }
 
-   .detail td,
-   .flow td,
-   .validation td {
-      vertical-align: middle;
+   .fa-minus {
+      color: gold
+   }
+
+   .fa-times {
+      color: red;
+   }
+
+   .fa-check {
+      color: green;
    }
 </style>
 
 <body>
    <tbody>
+      <!-- image-->
+      <div>
+         <tr>
+            <td>
+               <img align="right" src="https://storageb2cprod.blob.core.windows.net/asset-b2c-prod/aop/logo-aop.png"
+                  alt="Astra Oto Shop" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none"
+                  width="140px" height="52" border="0">
+            </td>
+         </tr>
+      </div>
+      <!-- report-->
+      <div>
+         <tr>
+            <td>
+               <!-- summary -->
+               <div class="detail">
+                  <p> The following is your automation test result summary: <br></p>
+                  <table>
+                     <tr>
+                        <td style="width: 10%;">Start Date</td>
+                        <td>: 18/02/2024, 18:33:35 WIB </td>
+                     </tr>
+                     <tr>
+                        <td>End Date</td>
+                        <td>: 18/02/2024, 18:37:11 WIB </td>
+                     </tr>
+                     <tr>
+                        <td>Duration</td>
+                        <td>: 3 minutes and 36 seconds </td>
+                     </tr>
+                  </table>
+               </div>
+               <!-- recap -->
+               <div style="padding-top: 10px;">
+                  <table class="summary" style="border: 1px solid rgb(234, 234, 234);">
+                     <thead>
+                        <tr>
+                           <th style="width: 75%;text-align: left;">Scenario</th>
+                           <th colspan="2" style="text-align: left;">Process</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td rowspan="9" style="border-bottom: 1px solid rgb(234, 234, 234)">
+                              <b># 1 </b><br>
+                              <a href="#scenario-1">Melakukan order produk Suku Cadang dilanjutkan proses pembatalan</a>
+                           </td>
+                           <td style="width: 20% ;">1. Login Account</td>
+                           <td style="text-align: center"> <i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td>2. Cleansing Product Cart</td>
+                           <td style="text-align: center"><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td>3. Get Location</td>
+                           <td style="text-align: center"> <i class="fas fa-minus"></i></td>
+                        </tr>
+                        <tr>
+                           <td>4. Get Product Detail</td>
+                           <td style="text-align: center"><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td>5. Add to Cart</td>
+                           <td style="text-align: center"><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td>6. Apply Point in Cart</td>
+                           <td style="text-align: center"><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td>7. Apply Coupon in Cart</br></td>
+                           <td style="text-align: center;"><i class="fas fa-times"></i></td>
+                        </tr>
+                        <tr>
+                           <td> 8. Order Process</td>
+                           <td style="text-align: center"><i class="fas fa-check"></i></td>
+                        </tr>
+                        <tr>
+                           <td style="border-bottom: 1px solid rgb(234, 234, 234) "> 9. Cancelation Process </td>
+                           <td style="text-align: center;border-bottom: 1px solid rgb(234, 234, 234);"><i
+                                 class="fas fa-check"></i></td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </td>
+         </tr>
+      </div>
 
-        <div class="pagebreak">
-        <table class="flow">
-        <tr>
-           <td colspan="4" style="font-size:14px;">
-              <b>SCENARIO 1 </b><br>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4">
-              - Melakukan order produk <b><i>Suku Cadang</i></b> <br>
-              - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:14px; text-align: right;">
-              <b>#2240700281</b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:9px; text-align: right; ">
-              Order date: 17/02/2024, 22:47:02 WIB
-           </td>
-        </tr>
-     </table>
-     <table class="detail">
-        <!-- get location -->
-        <div>
-           <tr>
-              <th colspan="4">
-              
-              </th>
+      <div class="pagebreak">
+         <table class="flow">
+            <tr>
+               <td colspan="4" style="font-size:14px;padding-bottom: 10px; ">
+                  <b id="scenario-1">SCENARIO 1 </b>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4">
+                  - Melakukan order produk <b><i>Suku Cadang</i></b> <br>
+                  - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4" style="font-size:14px; text-align: right;">
+                  <b>#2240700294</b>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4" style="font-size:9px; text-align: right; ">
+                  Order date: 18/02/2024, 18:34:32 WIB
+               </td>
+            </tr>
+         </table>
+         <table class="detail">
+            <!-- get location -->
+            <div>
+               <tr>
+                  <th colspan="4"></th>
+               </tr>
+               <tr>
+                  <td style="width:12%"></td>
+                  <td colspan="3"></td>
+               </tr>
+               <tr>
+                  <td></td>
+                  <td colspan="3"></td>
+               </tr>
+               <tr>
+                  <td></td>
+                  <td colspan="3"></td>
+               </tr>
+            </div>
+            <!-- customer & order -->
+            <div>
+               <tr>
+                  <th colspan="2">Customer Information</th>
+               </tr>
+               <tr>
+                  <td style="width:12%">Name</td>
+                  <td style="width:40%">: Sindi Yulia</td>
+               </tr>
+               <tr>
+                  <td>Phone</td>
+                  <td>: 085156174151</td>
+               </tr>
+               <tr>
+                  <td>Address</td>
+                  <td colspan="3">: Jl Kemayoran Gempol RT 12 RW 4 No 09, Gg. Sejahtera Kec. Kemayoran, Kota. KOTA ADM.
+                     JAKARTA
+                     PUSAT, Provinsi. DKI JAKARTA, 10630</td>
+               </tr>
+            </div>
+            <!-- product -->
+            <div>
+               <tr>
+                  <th colspan="2">Product Detail</th>
+               </tr>
+               <tr>
+                  <td>SKU</td>
+                  <td colspan="3">: 550062463+4042292510016</td>
+               </tr>
+               <tr>
+                  <td>Name</td>
+                  <td colspan="3">: Paket Fast Tune Up Shell Advance AX7SC 10W40 0.8 L untuk Motor Matic+Protego Engine
+                     Flush</td>
+               </tr>
+               <tr>
+                  <td>Price</td>
+                  <td colspan="3">: 90080</td>
+               </tr>
+               <tr>
+                  <td></td>
+                  <td></td>
+               </tr>
+            </div>
+            <!-- coupon & point -->
+            <div>
+               <tr>
+                  <th colspan="2">Coupon & Point Usage</th>
+               </tr>
+               <tr>
+                  <td>Coupon Code</td>
+                  <td colspan="3">: TESTING132 ( <i>Kupon Diskon tidak bisa digunakan untuk tipe produk yang dipilih</i>
+                     )</td>
+               </tr>
+               <tr>
+                  <td>Point Amount</td>
+                  <td colspan="3">: 5000 ( <i>Successfully apply point</i> )</td>
+               </tr>
+            </div>
+            <!-- order-->
+            <div>
+               <tr>
+                  <th colspan="4">Order Detail</th>
+               </tr>
+               <tr>
+                  <td>Quantity</td>
+                  <td>: 1</td>
+               </tr>
+               <tr>
+                  <td>Payment Method</td>
+                  <td>: Credit Card</td>
+               </tr>
+               <tr>
+                  <td>Shipment Method</td>
+                  <td>: SICEPAT - SiCepat Besok Sampai Tujuan</td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="padding-top: 25px; text-align: right;">
+                     <table>
+                        <tr>
+                           <td colspan="2" style="width: 50%;"></td>
+                           <td style="text-align: left">Subtotal</td>
+                           <td>90080</td>
+                        </tr>
+                        <tr>
+                           <td colspan="2"></td>
+                           <td style="text-align: left">Point</td>
+                           <td>- 5000</td>
+                        </tr>
+                        <tr>
+                           <td colspan="2"></td>
+                           <td style="text-align: left">Coupon Disc.</td>
+                           <td>- 1</td>
+                        </tr>
+                        <tr>
+                           <td colspan="2"></td>
+                           <td style="text-align: left">Shipment Fee</td>
+                           <td>14000</td>
+                        </tr>
+                        <tr>
+                           <td colspan="2"></td>
+                           <td style="text-align: left">Shipment Disc.</td>
+                           <td>- 14000</td>
+                        </tr>
+                        <tr>
+                           <td colspan="2"></td>
+                           <td style="text-align: left;border-top: 1px solid grey"><b>Grand Total</b></td>
+                           <td style="border-top: 1px solid grey">85080</td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </div>
+            <!-- validation-->
+            <div>
+               <tr>
+                  <th colspan="4">Validation</th>
+               </tr>
+               <tr>
+                  <td colspan="4" style="padding-left: 20px;">
+                     Point
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4">
+                     <table class="validation">
+                        <th>Before Order</th>
+                        <th>After Order</th>
+                        <th>After Cancel</th>
+                        <tr>
+                           <td>800.069</td>
+                           <td>795.069</td>
+                           <td>800.069</td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="padding-left: 20px;">
+                     Stock (QTY)
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4">
+                     <table class="validation">
+                        <th>Before Order</th>
+                        <th>After Order</th>
+                        <th>After Cancel</th>
+                        <tr>
+                           <td>319</td>
+                           <td>318</td>
+                           <td>319</td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </div>
+         </table>
+      </div>
 
-           </tr>
-           <tr>
-              <td style="width:12%">
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-
-        </div>
-        <!-- customer & order -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Customer Information
-              </th>
-           </tr>
-           <tr>
-              <td style="width:12%">
-                 Name
-              </td>
-              <td style="width:40%">
-                 : Sindi Yulia
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Phone
-              </td>
-              <td>
-                 : 085156174151
-              </td>
-           </tr>
-           <tr>
-              <td>
-              Address
-              </td>
-              <td colspan="3">
-                 : Jl Kemayoran Gempol RT 12 RW 4 No 09, Gg. Sejahtera Kec. Kemayoran, Kota. KOTA ADM. JAKARTA PUSAT, Provinsi. DKI JAKARTA, 10630
-              </td>
-           </tr>
-        </div>
-        <!-- product -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Product Detail
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 SKU
-              </td>
-              <td colspan="3">
-                 : 550062463+4042292510016
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Name
-              </td>
-              <td colspan="3">
-                 : Paket Fast Tune Up Shell Advance AX7SC 10W40 0.8 L untuk Motor Matic+Protego Engine Flush
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Price
-              </td>
-              <td colspan="3">
-                 : 90080
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td>
-              
-              </td>
-           </tr>
-        </div>
-        <!-- coupon & point -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Coupon & Point Usage
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 Coupon Code
-              </td>
-              <td colspan="3">
-                 : TESTING132 ( <i>Kupon Diskon tidak bisa digunakan untuk tipe produk yang dipilih</i> )
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Point Amount
-              </td>
-              <td colspan="3">
-                 : 5000 ( <i>Successfully apply point</i> )
-              </td>
-           </tr>
-        </div>
-        <!-- order-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Order Detail
-              </th>
-           </tr>
-           <tr>
-              <td>Payment Method</td>
-              <td>: Credit Card</td>
-              <td>
-                 Quantity
-              </td>
-              <td style="text-align:right;">
-              1
-              </td>
-           </tr>
-           <tr>
-              <td>Shipment Method</td>
-              <td>: SICEPAT - SiCepat Besok Sampai Tujuan</td>
-              <td>
-                 Subtotal
-              </td>
-              <td style="text-align:right;">
-              90080
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                 Point
-              </td>
-              <td style="text-align:right;">
-              -5000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                
-              </td>
-              <td style="text-align:right;">
-                
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              Shipment Fee
-              </td>
-              <td style="text-align:right;">
-              14000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              Shipment Disc.
-              </td>
-              <td style="text-align:right;">
-              -14000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td style="border-top: 1px solid grey">
-                 <b>Grand Total </b>
-              </td>
-              <td style="text-align:right;border-top: 1px solid grey">
-              85080
-              </td>
-           </tr>
-        </div>
-        <!-- validation-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Validation
-              </th>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 POINT
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>800.069</td>
-                       <td>795.069</td>
-                       <td>800.069</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 Stock (QTY)
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>319</td>
-                       <td>318</td>
-                       <td>319</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-        </div>
-     </table>
-     </table>
-     </div>
-        
-        <div class="pagebreak">
-        <table class="flow">
-        <tr>
-           <td colspan="4" style="font-size:14px;">
-              <b>SCENARIO 2 </b><br>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4">
-              - Melakukan order produk <b><i>Layanan Bengkel</i></b> <br>
-              - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:14px; text-align: right;">
-              <b>#3240705280</b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:9px; text-align: right; ">
-              Order date: 17/02/2024, 22:48:14 WIB
-           </td>
-        </tr>
-     </table>
-     <table class="detail">
-        <!-- get location -->
-        <div>
-           <tr>
-              <th colspan="4">
-              Get Location
-              </th>
-
-           </tr>
-           <tr>
-              <td style="width:12%">
-              Latitude
-              </td>
-              <td colspan="3">
-              : -6.1627055
-              </td>
-           </tr>
-           <tr>
-              <td>
-              Longitude
-              </td>
-              <td colspan="3">
-              : 106.8526908
-              </td>
-           </tr>
-           <tr>
-              <td>
-              Nearest Place
-              </td>
-              <td colspan="3">
-              : Kebon Kosong, Kec. Kemayoran, KOTA ADM. JAKARTA PUSAT
-              </td>
-           </tr>
-
-        </div>
-        <!-- customer & order -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Customer Information
-              </th>
-           </tr>
-           <tr>
-              <td style="width:12%">
-                 Name
-              </td>
-              <td style="width:40%">
-                 : Cindy
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Phone
-              </td>
-              <td>
-                 : 087757921231
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td colspan="3">
-                 
-              </td>
-           </tr>
-        </div>
-        <!-- product -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Product Detail
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 SKU
-              </td>
-              <td colspan="3">
-                 : MQ-550062463
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Name
-              </td>
-              <td colspan="3">
-                 : Voucher Motoquick Shell Advance AX7SC 10W40 0.8 L untuk Motor Matic
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Price
-              </td>
-              <td colspan="3">
-                 : 49000
-              </td>
-           </tr>
-           <tr>
-              <td>
-              Merchant
-              </td>
-              <td>
-              : MOTOQUICK KALI BARU TIMUR 5
-              </td>
-           </tr>
-        </div>
-        <!-- coupon & point -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Coupon & Point Usage
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 Coupon Code
-              </td>
-              <td colspan="3">
-                 : TESTING132 ( <i>Successfully apply coupon</i> )
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Point Amount
-              </td>
-              <td colspan="3">
-                 : 5000 ( <i>Tidak memenuhi syarat, minimal pembelanjaan 50.000</i> )
-              </td>
-           </tr>
-        </div>
-        <!-- order-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Order Detail
-              </th>
-           </tr>
-           <tr>
-              <td>Payment Method</td>
-              <td>: Credit Card</td>
-              <td>
-                 Quantity
-              </td>
-              <td style="text-align:right;">
-              1
-              </td>
-           </tr>
-           <tr>
-              <td></td>
-              <td></td>
-              <td>
-                 Subtotal
-              </td>
-              <td style="text-align:right;">
-              49000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                 Point
-              </td>
-              <td style="text-align:right;">
-              0
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                Coupon Disc.
-              </td>
-              <td style="text-align:right;">
-                - 1
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              
-              </td>
-              <td style="text-align:right;">
-              
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              
-              </td>
-              <td style="text-align:right;">
-              
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td style="border-top: 1px solid grey">
-                 <b>Grand Total </b>
-              </td>
-              <td style="text-align:right;border-top: 1px solid grey">
-              48999
-              </td>
-           </tr>
-        </div>
-        <!-- validation-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Validation
-              </th>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 POINT
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>800.069</td>
-                       <td>800.069</td>
-                       <td>800.069</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 Stock (QTY)
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>72</td>
-                       <td>71</td>
-                       <td>72</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-        </div>
-     </table>
-     </table>
-     </div>
-        
-        <div class="pagebreak">
-        <table class="flow">
-        <tr>
-           <td colspan="4" style="font-size:14px;">
-              <b>SCENARIO 3 </b><br>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4">
-              - Melakukan order produk <b><i>Homeservice</i></b> <br>
-              - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:14px; text-align: right;">
-              <b>#3240705281</b>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="4" style="font-size:9px; text-align: right; ">
-              Order date: 17/02/2024, 22:49:18 WIB
-           </td>
-        </tr>
-     </table>
-     <table class="detail">
-        <!-- get location -->
-        <div>
-           <tr>
-              <th colspan="4">
-              
-              </th>
-
-           </tr>
-           <tr>
-              <td style="width:12%">
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td colspan="3">
-              
-              </td>
-           </tr>
-
-        </div>
-        <!-- customer & order -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Customer Information
-              </th>
-           </tr>
-           <tr>
-              <td style="width:12%">
-                 Name
-              </td>
-              <td style="width:40%">
-                 : Sindi Yulia
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Phone
-              </td>
-              <td>
-                 : 085156174151
-              </td>
-           </tr>
-           <tr>
-              <td>
-              Address
-              </td>
-              <td colspan="3">
-                 : Jl Kemayoran Gempol RT 12 RW 4 No 09, Gg. Sejahtera Kec. Kemayoran, Kota. KOTA ADM. JAKARTA PUSAT, Provinsi. DKI JAKARTA, 10630
-              </td>
-           </tr>
-        </div>
-        <!-- product -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Product Detail
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 SKU
-              </td>
-              <td colspan="3">
-                 : SD-550043469
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Name
-              </td>
-              <td colspan="3">
-                 : Voucher Shell Helix Astra Oil 10W30 4 Ltr + Pemasangan (Oli untuk Mobil Bensin)
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Price
-              </td>
-              <td colspan="3">
-                 : 314000
-              </td>
-           </tr>
-           <tr>
-              <td>
-              
-              </td>
-              <td>
-              
-              </td>
-           </tr>
-        </div>
-        <!-- coupon & point -->
-        <div>
-           <tr>
-              <th colspan="2">
-                 Coupon & Point Usage
-              </th>
-           </tr>
-           <tr>
-              <td>
-                 Coupon Code
-              </td>
-              <td colspan="3">
-                 : TESTING132 ( <i>Kupon Diskon tidak bisa digunakan untuk tipe produk yang dipilih</i> )
-              </td>
-           </tr>
-           <tr>
-              <td>
-                 Point Amount
-              </td>
-              <td colspan="3">
-                 : 5000 ( <i>Successfully apply point</i> )
-              </td>
-           </tr>
-        </div>
-        <!-- order-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Order Detail
-              </th>
-           </tr>
-           <tr>
-              <td>Payment Method</td>
-              <td>: Credit Card</td>
-              <td>
-                 Quantity
-              </td>
-              <td style="text-align:right;">
-              1
-              </td>
-           </tr>
-           <tr>
-              <td></td>
-              <td></td>
-              <td>
-                 Subtotal
-              </td>
-              <td style="text-align:right;">
-              314000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                 Point
-              </td>
-              <td style="text-align:right;">
-              -5000
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-                
-              </td>
-              <td style="text-align:right;">
-                
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              
-              </td>
-              <td style="text-align:right;">
-              
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td>
-              
-              </td>
-              <td style="text-align:right;">
-              
-              </td>
-           </tr>
-           <tr>
-              <td colspan="2"></td>
-              <td style="border-top: 1px solid grey">
-                 <b>Grand Total </b>
-              </td>
-              <td style="text-align:right;border-top: 1px solid grey">
-              309000
-              </td>
-           </tr>
-        </div>
-        <!-- validation-->
-        <div>
-           <tr>
-              <th colspan="4">
-                 Validation
-              </th>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 POINT
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>800.069</td>
-                       <td>795.069</td>
-                       <td>800.069</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4" style="padding-left: 20px;">
-                 Stock (QTY)
-              </td>
-           </tr>
-           <tr>
-              <td colspan="4">
-                 <table class="validation">
-                    <th>Before Order</th>
-                    <th>After Order</th>
-                    <th>After Cancel</th>
-                    <tr>
-                       <td>99593</td>
-                       <td>99592</td>
-                       <td>99593</td>
-                    </tr>
-                 </table>
-              </td>
-           </tr>
-        </div>
-     </table>
-     </table>
-     </div>
-        
-</tbody>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script type="text/javascript" src="js/fullpage.js"></script>
-<script type="text/javascript" src="js/examples.js"></script>
+   </tbody>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+   <script type="text/javascript" src="js/fullpage.js"></script>
+   <script type="text/javascript" src="js/examples.js"></script>
 </body>
 
 </html>

@@ -59,7 +59,7 @@ const generatePdf = async (content, hal) => {
         headerTemplate: contentHeader,
         footerTemplate: contentFooter,
         margin: {
-            top: '40px',
+            top: '10px',
             bottom: '40px'
         }
     });

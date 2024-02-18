@@ -19,6 +19,7 @@ import { PuppeteerScreenRecorder } from "puppeteer-screen-recorder";
 import config from "./constanta/config.js";
 import { sendMail } from "./utils/baseService.js";
 import htmlPage2 from "./html/example.js";
+import getHtmlData from "./html/generateHtml.js";
 
 (async function main() {
     const browser = await puppeteer.launch({
@@ -285,19 +286,25 @@ import htmlPage2 from "./html/example.js";
 
     await recorder.stop();
 
-    const htmlPage1 = await getBodyHtml(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
-    const page1 = await generatePdf(htmlPage1, '1');
+    console.log('oke, coba generate html')
 
-    // const htmlPage2 = await getBodyHtmlPage2(custOrderDetail);
-    const htmlPage2Resp = await htmlPage2(custOrderDetail);
-    const page2 = await generatePdf(htmlPage2Resp, '2');
+    const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
+    const page1 = await generatePdf(htmlResult,'1');
 
-    let filePdf = [page1, page2];
-    const docPath = await mergePdf(filePdf);
-    console.log(docPath);
-    const filename = docPath.replace("./document/", "");
-    console.log(filename)
-    await sendMail(filename, docPath);
+    // const htmlPage1 = await getBodyHtml(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
+    // const page1 = await generatePdf(htmlPage1, '1');
+
+    // // const htmlPage2 = await getBodyHtmlPage2(custOrderDetail);
+    // const htmlPage2Resp = await htmlPage2(custOrderDetail);
+    // const page2 = await generatePdf(htmlPage2Resp, '2');
+
+    // let filePdf = [page1, page2];
+    // const docPath = await mergePdf(filePdf);
+    // console.log(docPath);
+    // const filename = docPath.replace("./document/", "");
+    // console.log(filename)
+    // await sendMail(filename, docPath);
+
     await browser.close();
 
 })();

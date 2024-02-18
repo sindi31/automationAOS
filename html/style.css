@@ -1,44 +1,72 @@
-p {
-    color: blueviolet;
-    font-size: 30px;
+@media print {
+    .pagebreak {
+        page-break-after: always;
+    }
+
+    /* page-break-after works, as well */
 }
 
 body {
-    margin:0;
-    padding:0;
-    color:#333;
-    font-style:normal;
-    font-family:'Open Sans',sans-serif;
-    text-align:left;
-    background-color:white;
-}
-table, validation {
-    border-collapse:collapse;
-    width:100%;
-    margin:10 auto;
+    margin: 25px;
+    padding: 0;
+    color: #333;
+    font-style: normal;
+    font-family: 'Open Sans', sans-serif;
+    text-align: left;
+    background-color: white;
 }
 
-.detail , .flow{
-    font-size: 9px;
-    padding-top: 5px;  
+table,
+validation, summary {
+    border-collapse: collapse;
+    width: 100%;
 }
+
+.detail,
+.flow {
+    font-size: 9px;
+    padding-top: 5px;
+}
+
 .flow td {
     padding-left: 5px;
     padding-right: 5px;
 
 }
+
 .detail th {
     font-size: 10px;
     color: #333;
     padding-left: 5px;
 }
+
 .detail td {
     text-indent: -5px;
     padding-left: 10px;
     padding-right: 5px;
 
 }
-.validation th {
+
+.validation td {
+    text-align: center;
+    border: 1px solid lightgrey
+}
+.summary td {
+    font-size: 9px;
+    vertical-align: top;
+    padding-left: 5px;
+}
+.summary i {
+    font-size: 1.6em;
+}
+
+.detail td,
+.flow td,
+.validation td {
+    vertical-align: top;
+}
+
+.validation th, .summary th{
     font-size: 9px;
     text-align: center;
     background-color: lightgrey;
@@ -46,11 +74,18 @@ table, validation {
     width: 33%;
     border: 1px solid lightgrey
 }
-.validation td {
-    text-align: center;
-    border: 1px solid lightgrey
-}
-.detail td , .flow td, .validation td{
-    vertical-align: middle;
-}
 
+.summary th {
+    padding-left: 5px;}
+    
+.fa-minus {
+    color: gold
+ }
+
+ .fa-times {
+    color: red;
+ }
+
+ .fa-check {
+    color: green;
+ }
