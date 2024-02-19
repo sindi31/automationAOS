@@ -4,16 +4,18 @@ import { pdf } from 'puppeteer-report';
 import { PDFDocument } from "pdf-lib";
 
 const contentHeader = `
-   <span style="font-size: 10px;padding-left : 5px"><i>
+   <span style="font-size: 10px;padding-left : 15px"><i>
          This is a custom PDF for Automation Test Result
        <span>B2C AstraOtoshop</span> (<span> https://astraotoshop.com </span>)</i>
    </span>
    `
 
 const contentFooter =
+
     `
-        <span style="font-size: 10px;padding-left : 5p"><i>
+        <span style="font-size: 10px;padding-left : 15px"><i>
             Generated on: <span class="date"></span><br/>
+            Page <span class="pageNumber"></span> of <span class="totalPages "></span>
         </span>
         `
 
@@ -59,7 +61,7 @@ const generatePdf = async (content, hal) => {
         headerTemplate: contentHeader,
         footerTemplate: contentFooter,
         margin: {
-            top: '10px',
+            top: '30px',
             bottom: '40px'
         }
     });
