@@ -51,9 +51,9 @@ import getHtmlData from "./html/generateHtml.js";
     let indexOrder = "";
     let indexCancel = "";
 
-    const recorder = new PuppeteerScreenRecorder(page); // Config is optional
-    const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
-    await recorder.start(savePath);
+    // const recorder = new PuppeteerScreenRecorder(page); // Config is optional
+    // const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
+    // await recorder.start(savePath);
 
     // await page.goto(process.env.URL);
     await page.goto(config.URL);
@@ -280,11 +280,11 @@ import getHtmlData from "./html/generateHtml.js";
 
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
-    console.log(custOrderDetail);
-    console.log(recapStatus);
+    // console.log(custOrderDetail);
+    // console.log(recapStatus);
 
 
-    await recorder.stop();
+    // await recorder.stop();
 
     console.log('oke, coba generate html')
 

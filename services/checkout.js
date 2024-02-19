@@ -17,6 +17,7 @@ const chooseShipment = async (page) => {
     await useButton.click();
 }
 const choosePayment = async (page, paymentMethod, typeOfProduct) => {
+    await page.keyboard.press("PageDown");
     await page.waitForSelector(".sc-1crxk01-0.uSUpG.sc-dfsrp1-9.ieiNxl", { visible: true });
     await page.waitForTimeout(2000)
 
@@ -51,18 +52,20 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
     } else if (paymentMethod === "VA Bank Lainnya") {
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='VA Bank Lainnya']", { visible: true });
     } else if (paymentMethod === "Credit Card") {
+        await page.keyboard.press("PageDown");
+        await page.waitForTimeout(1000)
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Credit Card']", { visible: true });
     } else if (paymentMethod === "AstraPay") {
+        await page.keyboard.press("PageDown");
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='AstraPay']", { visible: true });
     } else if (paymentMethod.includes('GOPAY')) {
-        console.log('cek masuk gopay')
         await page.keyboard.press("PageDown");
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='GOPAY/QRIS']", { visible: true });
         await page.waitForTimeout(1000)
     } else {
+        await page.keyboard.press("PageDown");
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Alfamart']", { visible: true });
     }
-    // const selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Mandiri VA']", { visible: true });
     await selectPaymentMethod.click();
     page.waitForTimeout(3000);
 
