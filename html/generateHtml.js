@@ -237,7 +237,7 @@ const detailHtml = async (custOrderDetail) => {
                <tr>
                   <td colspan="4">
                      - Melakukan order produk <b><i>${custOrderDetail[i].productType}</i></b> <br>
-                     - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
+                     - Melakukan pembatalan order : <b><i>${custOrderDetail[i].paymentMethod.includes('VA')?'Klik Batalkan Pesanan':custOrderDetail[i].paymentMethod.includes('Alfa')?'Klik Batalkan Pesanan':custOrderDetail[i].paymentMethod.includes('Credit')?'Klik Back CC Page':'Batalkan via Admin'}</i></b>
                   </td>
                </tr>
                <tr>
