@@ -3,7 +3,7 @@ const data = {
     isBookingDate: "false",
     point: "5000",
     coupon: "TESTING132",
-    payWith: "Credit Card"
+    payWith: "Alfamart"
 }
 
 export default data;
