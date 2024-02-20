@@ -9,6 +9,20 @@ const chooseShipment = async (page) => {
     const listShippingMethod = await page.waitForXPath(checkoutPage.shippingMethodButton, { visible: true });
     await listShippingMethod.click();
     await page.waitForTimeout(4000);
+    
+    let isShipment = await page.$eval(checkoutPage.toggleShipment, () => true).catch(() => false);
+    console.log(isShipment)
+    while (isShipment == false) {
+        const backToCheckout = await page.waitForXPath("//*[name()='path' and contains(@d,'M8.92711 0')]", { visible: true });
+        await backToCheckout.click();
+        await page.waitForTimeout(1000);
+        await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+        const listShippingMethod = await page.waitForXPath(checkoutPage.shippingMethodButton, { visible: true });
+        await listShippingMethod.click();
+        await page.waitForTimeout(4000);
+        isShipment = await page.$eval(checkoutPage.toggleShipment, () => true).catch(() => false);
+        console.log(isShipment);
+    }
 
     await page.click(checkoutPage.toggleShipment);
     const selectedShipment = await page.waitForXPath(checkoutPage.firstShipment, { visible: true });
@@ -57,13 +71,15 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Credit Card']", { visible: true });
     } else if (paymentMethod === "AstraPay") {
         await page.keyboard.press("PageDown");
+        await page.waitForTimeout(1000);
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='AstraPay']", { visible: true });
     } else if (paymentMethod.includes('GOPAY')) {
         await page.keyboard.press("PageDown");
-        selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='GOPAY/QRIS']", { visible: true });
         await page.waitForTimeout(1000)
+        selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='GOPAY/QRIS']", { visible: true });
     } else {
         await page.keyboard.press("PageDown");
+        await page.waitForTimeout(500);
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Alfamart']", { visible: true });
     }
     await selectPaymentMethod.click();

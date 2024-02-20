@@ -21,7 +21,7 @@ import { sendMail } from "./utils/baseService.js";
 import htmlPage2 from "./html/example.js";
 import getHtmlData from "./html/generateHtml.js";
 
-(async function main() {
+const oneFlowOrderCancel = async (paymentWith) => {
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: false,
@@ -143,7 +143,7 @@ import getHtmlData from "./html/generateHtml.js";
                     // await page.waitForTimeout(100000);
                     // apply coupon in cart end
 
-                    orderResponse = await checkout(page, data.payWith, productType[i], browser); // proses order di halaman checkout
+                    orderResponse = await checkout(page, paymentWith, productType[i], browser); // proses order di halaman checkout
 
                     if (orderResponse.status === 200) {
                         orderStatus = true;
@@ -161,12 +161,12 @@ import getHtmlData from "./html/generateHtml.js";
                         // }
                         // get detail product after order end <<<
 
-                        if (data.payWith.includes('VA') || data.payWith.includes('Alfa') || data.payWith.includes('GOPAY')) {
+                        if (paymentWith.includes('VA') || paymentWith.includes('Alfa') || paymentWith.includes('GOPAY')) {
                             // const backToHome = await page.goto(process.env.URL); // back to homepage
                             const backToHome = await page.goto(config.URL); // back to homepage
                             poinCustAfterOrderResp = await checkPointHomepage(page); // get point customer after order
                             await page.waitForTimeout(2000);
-                        } else if (data.payWith.includes('Credit')) {
+                        } else if (paymentWith.includes('Credit')) {
                             const page2 = await browser.newPage();
                             // await page2.goto(process.env.URL); // back to homepage
                             await page2.goto(config.URL); // back to homepage
@@ -192,7 +192,7 @@ import getHtmlData from "./html/generateHtml.js";
 
 
         if (orderStatus === true) {
-            const cancelOrderResp = await cancelOrder(page, orderResponse.data.orderNumber, data.payWith, orderResponse.data.id, browser);
+            const cancelOrderResp = await cancelOrder(page, orderResponse.data.orderNumber, paymentWith, orderResponse.data.id, browser);
             if (cancelOrderResp.status === 200) {
                 cancelStatus = true;
                 // get detail product after cancel
@@ -274,7 +274,7 @@ import getHtmlData from "./html/generateHtml.js";
 
             usedCoupon: data.coupon,
             useCouponStatus: useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
-            useCouponData: useCouponResponse[1].discountDetail[0]?useCouponResponse[1].discountDetail[0] :''
+            useCouponData: useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : ''
         }
     }
 
@@ -288,8 +288,14 @@ import getHtmlData from "./html/generateHtml.js";
 
     console.log('oke, coba generate html')
 
-    const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
-    const page1 = await generatePdf(htmlResult,'1');
+    try {
+        const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
+        const page1 = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod);
+
+    } catch (error) {
+        console.log('error >>', error)
+
+    }
 
     // const htmlPage1 = await getBodyHtml(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
     // const page1 = await generatePdf(htmlPage1, '1');
@@ -305,6 +311,10 @@ import getHtmlData from "./html/generateHtml.js";
     // console.log(filename)
     // await sendMail(filename, docPath);
 
+    await page.waitForTimeout(10000)
+
     await browser.close();
 
-})();
+};
+
+export default oneFlowOrderCancel;

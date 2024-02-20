@@ -19,7 +19,7 @@ const contentFooter =
         </span>
         `
 
-const generatePdf = async (content, hal) => {
+const generatePdf = async (content, paymentMethod) => {
     // Save HTML content to a file
     const browser = await puppeteer.launch({
         headless: true,
@@ -35,19 +35,26 @@ const generatePdf = async (content, hal) => {
     // Read HTML content from file and convert to PDF
     let htmlFilePath = "";
     let pdfFilePath = "";
-    if (hal === '1') {
-        await fs.promises.writeFile('html/page1.html', content);
-        console.log('HTML file has been saved!');
-        htmlFilePath = '.html/page1.html';
-        // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-        pdfFilePath = 'document/pdf-page1-' + new Date().toJSON().slice(0, 10) +'.pdf';
-    } else {
-        await fs.promises.writeFile('html/page2.html', content);
-        console.log('HTML file has been saved!');
-        htmlFilePath = '.html/page2.html';
-        // pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.pdf';
-        pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10) +'.pdf';
-    }
+
+    // await fs.promises.writeFile('../html/page1.html', content);
+    await fs.promises.writeFile('D:/AOP/Work/automationAOS/document/page1.html', content);
+
+    console.log('HTML file has been saved!');
+    // htmlFilePath = '../html/page1.html';
+    htmlFilePath = 'D:/AOP/Work/automationAOS/document/page1.html';
+
+    // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
+    pdfFilePath = 'D:/AOP/Work/automationAOS/document/automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'.pdf';
+
+    // if (hal === '1') {
+       
+    // } else {
+    //     await fs.promises.writeFile('../html/page2.html', content);
+    //     console.log('HTML file has been saved!');
+    //     htmlFilePath = '..html/page2.html';
+    //     // pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.pdf';
+    //     pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10) +'.pdf';
+    // }
     // const contentPdf = await fs.promises.readFile(htmlFilePath, 'utf-8');
     await page.setContent(content, {
         waitUntil: "networkidle0"
