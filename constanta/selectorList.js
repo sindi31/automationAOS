@@ -44,12 +44,16 @@ const cartPage ={
     checklistAll: ".sc-14l7xyx-0.jXJvcI",
     pointField : ".sc-1auyczi-2.gXBdsu.sc-1uj1rn4-2.gFJWwS",
     usePointButton : ".sc-w647qe-0.iggsXM",
-    couponField : "//input[@placeholder='Tuliskan kupon diskon']",
+    // couponField : "//input[@placeholder='Tuliskan kupon diskon']",
+    // couponField : "#content-app > div > div:nth-child(2) > div.sc-1crxk01-0.bkDSwo > div:nth-child(3) > div > div > div.sc-1crxk01-0.inhaeL > div > input",
+    couponField : "input[placeholder='Tuliskan kupon diskon']",
+
     useCouponButton : "//span[@class='sc-w647qe-0 iggsXM']",
-    checkoutButton :".sc-1nihjkh-2.VYvtK.sc-ysqdlt-4.sc-ysqdlt-5.eYOmyF",
+    checkoutButton :".sc-1nihjkh-2.VYvtK.sc-ysqdlt-4.sc-ysqdlt-6.fTJVtd",
     emptyCart :".sc-w647qe-0.dQZTbH",
     deleteProduct :".sc-w647qe-0.ihQTQB",
-    backButton :".sc-rq82e3-0.bYIQff"
+    backButton :".sc-rq82e3-0.bYIQff",
+    gunakanSemua: ".sc-14l7xyx-4.dZJhhC"
 }
 
 

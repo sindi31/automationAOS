@@ -19,13 +19,20 @@ const checklistProduct = async (page) => {
 }
 
 const usePoint = async (page, Point) => {
+    if (Point === 'Gunakan Semua') {
+        console.log("gunakan semua");
+        await page.waitForTimeout(2000);
+        await page.click(cartPage.gunakanSemua, {waitUntil: 'domcontentloaded'});
+    } else {
+        const inputPoin = await page.waitForSelector(cartPage.pointField, { visible: true });
+        await inputPoin.type(Point);
+        await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
 
-    const inputPoin = await page.waitForSelector(cartPage.pointField, { visible: true });
-    await inputPoin.type(Point);
-    await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
+    }
 
     let usePoinResponse = await responseUrl(page, 'summary');
-    let summaryDecrypted = await decryptProcess(usePoinResponse.data.iv, usePoinResponse.data.encryptedData, "summary")
+    let summaryDecrypted = await decryptProcess(usePoinResponse.data.iv, usePoinResponse.data.encryptedData, "summary");
+    console.log(summaryDecrypted)
     return summaryDecrypted;
 }
 
@@ -34,12 +41,16 @@ const useCoupon = async (page, couponName) => {
     let useCouponResp = "";
     let response = "";
 
-    const inputCoupon = await page.waitForXPath(cartPage.couponField, { visible: true });
+    // const inputCoupon = await page.waitForXPath(cartPage.couponField, { visible: true });
+    const inputCoupon = await page.waitForSelector(cartPage.couponField,{visible:true});
+    await page.waitForTimeout(1000);
     await inputCoupon.type(couponName);
+    console.log('coba input kupon')
 
     // const gunakanButton = (await page.$x("//span[@class='sc-w647qe-0 iggsXM']",{visible:true}))[1];
-    const gunakanButton = await page.waitForXPath("/html[1]/body[1]/main[1]/div[1]/div[2]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/span[1]");
     await page.waitForTimeout(1000);
+    const gunakanButton = await page.waitForSelector("#content-app > div > div:nth-child(2) > div.sc-1crxk01-0.bkDSwo > div:nth-child(3) > div > div > div.sc-1crxk01-0.inhaeL > div > span",{visible:true});
+    // await page.waitForTimeout(1000);
     await gunakanButton.click();
 
     const baseURL = 'list?code=';

@@ -33,6 +33,13 @@ const oneFlowOrderCancel = async (paymentWith) => {
         await pages[0].close();
     }
 
+    // await page.setViewport({ width: 1600, height: 1200 });
+    // await page.setViewport({
+    //     width: 1920,
+    //     height: 1080,
+    //     deviceScaleFactor: 0.75
+    //   });
+
     let [loginStatus, getProductCardStatus, addToCartStatus, checklistProductCart, usePointStatus, useCouponStatus, orderStatus] = ["", "", "", "", "", "", ""];
     let [location, initPoint, getProductResponse, addToCartResponse, checklistProductCartResponse, usePointResponse, useCouponResponse, orderResponse, detailProductAfterOrderResp, poinCustAfterOrderResp] =
         ["", "", "", "", "", "", "", "", "", ""];
@@ -56,7 +63,15 @@ const oneFlowOrderCancel = async (paymentWith) => {
     // await recorder.start(savePath);
 
     // await page.goto(process.env.URL);
+    await page.goto("chrome://settings/appearance");
+    await page.waitForTimeout(1000);
+    await page.click("aria/Page Zoom")
+    await page.waitForTimeout(10000)
+
+
     await page.goto(config.URL);
+
+
 
     // const loginResp = await login(page, process.env.email, process.env.password); // login process
     const loginResp = await login(page, config.email, config.password); // login process
@@ -120,6 +135,11 @@ const oneFlowOrderCancel = async (paymentWith) => {
                     } else if (data.point > 0 && (getProductResponse.data.price * data.QTY) < '50000') {
                         usePointResponse = 'Tidak memenuhi syarat, minimal pembelanjaan 50.000';
                         usePointStatus = false
+                    } else {
+                        let usePointResp = await usePoint(page, data.point);
+                        let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
+                        usePointResponse = JSON.parse(repUsePointResp);
+                        usePointStatus = true;
                     }
                     await page.waitForTimeout(1000);
                     // apply point in cart end
@@ -280,38 +300,20 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
-    // console.log(custOrderDetail);
-    // console.log(recapStatus);
 
 
     // await recorder.stop();
 
     console.log('oke, coba generate html')
 
-    try {
-        const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
-        const page1 = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod);
+    const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
+    const pdfFilePath = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod);
 
-    } catch (error) {
-        console.log('error >>', error)
+    const filename = pdfFilePath.replace("./document/", "");
+    console.log(filename)
+    await sendMail(filename, pdfFilePath);
 
-    }
-
-    // const htmlPage1 = await getBodyHtml(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
-    // const page1 = await generatePdf(htmlPage1, '1');
-
-    // // const htmlPage2 = await getBodyHtmlPage2(custOrderDetail);
-    // const htmlPage2Resp = await htmlPage2(custOrderDetail);
-    // const page2 = await generatePdf(htmlPage2Resp, '2');
-
-    // let filePdf = [page1, page2];
-    // const docPath = await mergePdf(filePdf);
-    // console.log(docPath);
-    // const filename = docPath.replace("./document/", "");
-    // console.log(filename)
-    // await sendMail(filename, docPath);
-
-    await page.waitForTimeout(10000)
+    // await page.waitForTimeout(10000)
 
     await browser.close();
 
