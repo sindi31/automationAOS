@@ -7,6 +7,7 @@ const checkPointHomepage = async (page) => {
         // await page.goto(process.env.URL, {waitUntil: "networkiddle2"});
 
     }
+    await page.waitForTimeout(2000);
     await page.waitForSelector(".sc-w647qe-0.dUWxkQ", {
         visible: true
     });

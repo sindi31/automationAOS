@@ -42,15 +42,18 @@ const useCoupon = async (page, couponName) => {
     let response = "";
 
     // const inputCoupon = await page.waitForXPath(cartPage.couponField, { visible: true });
+    await page.keyboard.press("PageDown");
     const inputCoupon = await page.waitForSelector(cartPage.couponField,{visible:true});
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(3000);
+    console.log(couponName)
     await inputCoupon.type(couponName);
-    console.log('coba input kupon')
-
-    // const gunakanButton = (await page.$x("//span[@class='sc-w647qe-0 iggsXM']",{visible:true}))[1];
-    await page.waitForTimeout(1000);
-    const gunakanButton = await page.waitForSelector("#content-app > div > div:nth-child(2) > div.sc-1crxk01-0.bkDSwo > div:nth-child(3) > div > div > div.sc-1crxk01-0.inhaeL > div > span",{visible:true});
-    // await page.waitForTimeout(1000);
+    console.log('coba input kupon');
+    
+   
+    await page.waitForTimeout(2000);
+    const gunakanButton = (await page.$x("//span[@class='sc-w647qe-0 iggsXM']"))[1];
+    // const gunakanButton = await page.waitForSelector(cartPage.useCouponButton,{visible:true});
+    await page.waitForTimeout(2000);
     await gunakanButton.click();
 
     const baseURL = 'list?code=';

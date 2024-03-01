@@ -19,7 +19,7 @@ const contentFooter =
         </span>
         `
 
-const generatePdf = async (content, paymentMethod) => {
+const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     // Save HTML content to a file
     const browser = await puppeteer.launch({
         headless: true,
@@ -44,7 +44,7 @@ const generatePdf = async (content, paymentMethod) => {
     htmlFilePath = 'D:/AOP/Work/automationAOS/document/page1.html';
 
     // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-    pdfFilePath = 'D:/AOP/Work/automationAOS/document/automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'.pdf';
+    pdfFilePath = 'D:/AOP/Work/automationAOS/document/automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'-'+pointAmount+'-'+couponUsed+'.pdf';
 
     // if (hal === '1') {
        

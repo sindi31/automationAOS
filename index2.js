@@ -21,7 +21,7 @@ import { sendMail } from "./utils/baseService.js";
 import htmlPage2 from "./html/example.js";
 import getHtmlData from "./html/generateHtml.js";
 
-const oneFlowOrderCancel = async (paymentWith) => {
+const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: false,
@@ -63,10 +63,10 @@ const oneFlowOrderCancel = async (paymentWith) => {
     // await recorder.start(savePath);
 
     // await page.goto(process.env.URL);
-    await page.goto("chrome://settings/appearance");
-    await page.waitForTimeout(1000);
-    await page.click("aria/Page Zoom")
-    await page.waitForTimeout(10000)
+    // await page.goto("chrome://settings/appearance");
+    // await page.waitForTimeout(1000);
+    // await page.click("aria/Page Zoom")
+    // await page.waitForTimeout(10000)
 
 
     await page.goto(config.URL);
@@ -79,26 +79,32 @@ const oneFlowOrderCancel = async (paymentWith) => {
     for (let i = 0; i < productType.length; i++) {
         if (loginResp.status === 200) {
             loginStatus = true;
+            console.log('Login Process >>', loginStatus)
 
             cleansingResponse = await cleansingCart(page); // hapus semua produk di keranjang
 
             if (cleansingResponse.status === 200) {
                 cleansingCartStatus = true;
+                console.log('Cleansing Cart Process >>', cleansingCartStatus)
             } else {
                 cleansingCartStatus = false;
+                console.log('Cleansing Cart Process >>', cleansingCartStatus)
             }
 
             let getPoinCust = await checkPointHomepage(page); // get initial customer point
+            console.log('Get Init Point Cust Process >>', getPoinCust)
             initPoint = getPoinCust;
 
             // get location
             if (productType[i] === 'Layanan Bengkel') {
                 location = await getCurrentLocation(page);
-                console.log(location);
+                // console.log(location);
                 if (location.getLocationResponse.status === 200) {
                     getLocationStatus = true;
+                    console.log('Get Location Process >>', getLocationStatus)
                 } else {
                     getLocationStatus = false;
+                    console.log('Get Location Process >>', getLocationStatus)
                 }
             }
             //get location end
@@ -108,6 +114,7 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
             if (getProductResponse.status === 200) {
                 getProductCardStatus = true;
+                console.log('Get Product Process >>', getProductCardStatus)
 
                 // add to cart start
                 if (productType[i] === 'Suku Cadang') {
@@ -121,6 +128,7 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
                 if (addToCartResponse.respAddToCart.status === 200) {
                     addToCartStatus = true;
+                    console.log('Add to Cart Process >>', addToCartStatus);
 
                     checklistProductCartResponse = await checklistProduct(page); // checklist all product within productType
                     // checklistProductCartResponse = checklistProductCartResp;
@@ -128,35 +136,42 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
                     // apply point in cart start
                     if (data.point > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
-                        let usePointResp = await usePoint(page, data.point);
+                        let usePointResp = await usePoint(page, pointAmount);
                         let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
                         usePointResponse = JSON.parse(repUsePointResp);
                         usePointStatus = true;
+                        console.log('Use Point Process >>', usePointStatus)
                     } else if (data.point > 0 && (getProductResponse.data.price * data.QTY) < '50000') {
                         usePointResponse = 'Tidak memenuhi syarat, minimal pembelanjaan 50.000';
                         usePointStatus = false
+                        console.log('Use Point Process >>', usePointStatus)
                     } else {
-                        let usePointResp = await usePoint(page, data.point);
+                        let usePointResp = await usePoint(page, pointAmount);
                         let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
                         usePointResponse = JSON.parse(repUsePointResp);
                         usePointStatus = true;
+                        console.log('Use Point Process >>', usePointStatus)
                     }
                     await page.waitForTimeout(1000);
                     // apply point in cart end
 
                     // apply coupon in cart start
-                    if (data.coupon != "") {
-                        let useCouponResp = await useCoupon(page, data.coupon);
+                    console.log(couponUsed);
+                    if (couponUsed != "") {
+                        let useCouponResp = await useCoupon(page, couponUsed);
                         // console.log(useCouponResp[0].status);
                         useCouponResponse = useCouponResp;
                         if (useCouponResponse[0].status === 200) {
                             useCouponStatus = true;
+                            console.log('Use Coupon Process >>', useCouponStatus)
                         } else {
                             useCouponStatus = false;
+                            console.log('Use Coupon Process >>', useCouponStatus)
                         }
 
                     } else {
                         useCouponResponse = 'Tidak menggunakan kupon';
+                        console.log('Use Coupon Process>>', useCouponResponse);
                     }
 
                     // console.log(useCouponResponse[1].resUseCoupon[0].errorCondition);
@@ -167,6 +182,8 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
                     if (orderResponse.status === 200) {
                         orderStatus = true;
+                        console.log('Order Process>>', orderStatus);
+
                         // get detail product after order start >>>
                         if (productType[i] === "Layanan Bengkel") {
                             detailProductAfterOrderResp = await newGetProductAfterProcess(getProductResponse.data.urlKey, productType[i], browser, getProductResponse.data.id, location);
@@ -196,15 +213,23 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
                     } else {
                         orderStatus = false;
+                        console.log('Order Process>>', orderStatus);
+
                     }
                 } else {
                     addToCartStatus = false;
+                    console.log('Add to Cart Process>>', addToCartStatus);
+
                 }
             } else {
                 getProductCardStatus = false;
+                console.log('Get Product Process>>', getProductCardStatus);
+
             }
         } else {
             loginStatus = false;
+            console.log('Login Process>>', loginStatus);
+
 
         }
 
@@ -215,9 +240,13 @@ const oneFlowOrderCancel = async (paymentWith) => {
             const cancelOrderResp = await cancelOrder(page, orderResponse.data.orderNumber, paymentWith, orderResponse.data.id, browser);
             if (cancelOrderResp.status === 200) {
                 cancelStatus = true;
+                console.log('Cancel Process>>', cancelStatus);
+
                 // get detail product after cancel
             } else {
                 cancelStatus = false
+                console.log('Cancel Process>>', cancelStatus);
+
             }
 
             if (productType[i] === "Layanan Bengkel") {
@@ -233,6 +262,7 @@ const oneFlowOrderCancel = async (paymentWith) => {
 
             poinCustAfterCancelResp = await checkPointHomepage(page); // get point customer after cancel
         }
+        console.log(orderResponse.data.paymentMethod)
 
         recapStatus[i] = {
             login: loginStatus,
@@ -254,18 +284,18 @@ const oneFlowOrderCancel = async (paymentWith) => {
             productMerchant: getProductResponse.data.merchantName,
             productPrice: getProductResponse.data.price,
             productOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].name : 'It is not product service order',
-            orderNumber: orderResponse.data.orderNumber,
-            orderDate: new Date(orderResponse.data.orderDate).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
-            total: orderResponse.data.total,
-            qty: orderResponse.data.totalQuantity,
-            paymentMethod: orderResponse.data.paymentMethod.paymentMethod,
-            vaNumber: orderResponse.data.paymentMethod.vaNumber,
-            receiverName: orderResponse.data.receiverName ? orderResponse.data.receiverName : '',
-            receiverPhone: orderResponse.data.receiverPhone ? orderResponse.data.receiverPhone : '',
-            address: orderResponse.data.address,
+            orderNumber: orderResponse.data.orderNumber ? orderResponse.data.orderNumber : "",
+            orderDate: orderResponse.data.orderDate ? new Date(orderResponse.data.orderDate).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB" : "",
+            total: orderResponse.data.total ? orderResponse.data.total : "",
+            qty: orderResponse.data.totalQuantity ? orderResponse.data.totalQuantity : "",
+            paymentMethod: orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.paymentMethod : "",
+            vaNumber: orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.vaNumber : "",
+            receiverName: orderResponse.data.paymentMethod ? orderResponse.data.receiverName : '',
+            receiverPhone: orderResponse.data.paymentMethod ? orderResponse.data.receiverPhone : '',
+            address: orderResponse.data.address ? orderResponse.data.address : "",
             courier: orderResponse.data.shipmentMethod ? orderResponse.data.shipmentMethod.name + " - " + orderResponse.data.shipmentMethod.packages.name : 'It is not spareparts order',
             // shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail[1].value + orderResponse.data.paymentDetail.detail[2].value : '-',
-            shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail : '-',
+            shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentMethod ? orderResponse.data.paymentDetail.detail : '-' : '',
 
             initTotalQty: getProductResponse.data.totalQty,
             initAvailQty: getProductResponse.data.availableQty,
@@ -273,17 +303,17 @@ const oneFlowOrderCancel = async (paymentWith) => {
             initTotalAvailOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalAvailable : 'It is not product service order',
             initTotalSentOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalSent : 'It is not product service order',
 
-            afterOrderTotalQty: detailProductAfterOrderResp.productDetailRes.data.totalQty,
-            afterOrderTotalAvail: detailProductAfterOrderResp.productDetailRes.data.availableQty,
-            afterOrderTotalItemOutlet: detailProductAfterOrderResp.respMerchant.data ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalItem : 'It is not product service order',
-            afterOrderTotalAvailOutlet: detailProductAfterOrderResp.respMerchant.data ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalAvailable : 'It is not product service order',
-            afterOrderTotalSentOutlet: detailProductAfterOrderResp.respMerchant.data ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalSent : 'It is not product service order',
+            afterOrderTotalQty: detailProductAfterOrderResp.productDetailRes ? detailProductAfterOrderResp.productDetailRes.data.totalQty : "",
+            afterOrderTotalAvail: detailProductAfterOrderResp.productDetailRes ? detailProductAfterOrderResp.productDetailRes.data.availableQty : "",
+            afterOrderTotalItemOutlet: detailProductAfterOrderResp.respMerchant ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalItem : 'It is not product service order',
+            afterOrderTotalAvailOutlet: detailProductAfterOrderResp.respMerchant ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalAvailable : 'It is not product service order',
+            afterOrderTotalSentOutlet: detailProductAfterOrderResp.respMerchant ? detailProductAfterOrderResp.respMerchant.data[indexOrder].totalSent : 'It is not product service order',
 
-            afterCancelTotalQty: detailProductAfterCancelResp.productDetailRes.data.totalQty,
-            afterCancelTotalAvail: detailProductAfterCancelResp.productDetailRes.data.availableQty,
-            afterCancelTotalItemOutlet: detailProductAfterCancelResp.respMerchant.data ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalItem : 'It is not product service order',
-            afterCancelTotalAvailOutlet: detailProductAfterCancelResp.respMerchant.data ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalAvailable : 'It is not product service order',
-            afterCancelTotalSentOutlet: detailProductAfterCancelResp.respMerchant.data ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalSent : 'It is not product service order',
+            afterCancelTotalQty: detailProductAfterCancelResp.productDetailRes ? detailProductAfterCancelResp.productDetailRes.data.totalQty : "",
+            afterCancelTotalAvail: detailProductAfterCancelResp.productDetailRes ? detailProductAfterCancelResp.productDetailRes.data.availableQty : "",
+            afterCancelTotalItemOutlet: detailProductAfterCancelResp.respMerchant ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalItem : 'It is not product service order',
+            afterCancelTotalAvailOutlet: detailProductAfterCancelResp.respMerchant ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalAvailable : 'It is not product service order',
+            afterCancelTotalSentOutlet: detailProductAfterCancelResp.respMerchant ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalSent : 'It is not product service order',
 
             balancePoint: initPoint,
             usedPoint: data.point,
@@ -292,9 +322,9 @@ const oneFlowOrderCancel = async (paymentWith) => {
             poinAfterOrder: poinCustAfterOrderResp,
             pointAfterCancel: poinCustAfterCancelResp,
 
-            usedCoupon: data.coupon,
-            useCouponStatus: useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
-            useCouponData: useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : ''
+            usedCoupon: couponUsed,
+            useCouponStatus: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
+            useCouponData: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : ''
         }
     }
 
@@ -307,15 +337,17 @@ const oneFlowOrderCancel = async (paymentWith) => {
     console.log('oke, coba generate html')
 
     const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
-    const pdfFilePath = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod);
+    const pdfFilePath = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod, pointAmount, couponUsed);
 
-    const filename = pdfFilePath.replace("./document/", "");
+    const filename = pdfFilePath.replace("D:/AOP/Work/automationAOS/document/", "");
     console.log(filename)
     await sendMail(filename, pdfFilePath);
 
+    await browser.close();
+    return pdfFilePath;
     // await page.waitForTimeout(10000)
 
-    await browser.close();
+
 
 };
 
