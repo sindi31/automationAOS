@@ -9,7 +9,7 @@ const chooseShipment = async (page) => {
     const listShippingMethod = await page.waitForXPath(checkoutPage.shippingMethodButton, { visible: true });
     await listShippingMethod.click();
     await page.waitForTimeout(4000);
-    
+
     let isShipment = await page.$eval(checkoutPage.toggleShipment, () => true).catch(() => false);
     console.log(isShipment)
     while (isShipment == false) {
@@ -95,53 +95,64 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
 };
 
 const bayarSekarang = async (page, paymentName, browser) => {
-    const usePaymentMethod = await page.waitForSelector(checkoutPage.paymentNowButton, { visible: true });
-    await Promise.all([usePaymentMethod.click(), page.waitForNavigation()]);
     let orderDetailRes = "";
-    if (paymentName.includes("VA") ||  paymentName.includes("Alfa")) {
-        console.log('here Alfa')
-        await page.waitForTimeout(7000);
-        const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
-        if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
-            await page.click(orderPage.detailOrder);
-            let url = await page.url();
-            let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
-            let reqURL = "";
-            reqURL = await tempReqURL.replace("?category=null&paymentType=VA", "").replace("?category=service-center&paymentType=VA", "").replace("?category=null&paymentType=O2O", "").replace("?category=service-center&paymentType=O2O", "");
-            orderDetailRes = await responseUrl(page, reqURL);
+    const usePaymentMethod = await page.waitForSelector(checkoutPage.paymentNowButton, { visible: true });
+    // await Promise.all([usePaymentMethod.click(), page.waitForNavigation()]);
+    await usePaymentMethod.click();
+    let paymentResp =""
+    paymentResp = await responseUrl(page, 'payment');
+    console.log(paymentResp.status);
+
+    if (paymentResp.status !== 500) {
+        if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
+            console.log('here Alfa')
+            await page.waitForTimeout(7000);
+            const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
+            if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
+                await page.click(orderPage.detailOrder);
+                let url = await page.url();
+                let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
+                let reqURL = "";
+                reqURL = await tempReqURL.replace("?category=null&paymentType=VA", "").replace("?category=service-center&paymentType=VA", "").replace("?category=null&paymentType=O2O", "").replace("?category=service-center&paymentType=O2O", "");
+                orderDetailRes = await responseUrl(page, reqURL);
+                await page.waitForTimeout(3000);
+            }
+        } else if (paymentName.includes("Credit")) {
             await page.waitForTimeout(3000);
-        }
-    } else if (paymentName.includes("Credit")) {
-        await page.waitForTimeout(3000);
-        // const url = await pages.evaluate(() => window.location.href); 
-        const pagee = await browser.newPage();
-        await pagee.goto("https://astraotoshop.com/order-history-list");
-        let newXPath = "//div[@class='sc-1crxk01-0 iCxTTv']//div[1]//div[1]//div[1]//div[1]//span[1]"
-        const goToDetailOrder = await pagee.waitForXPath(newXPath, { visible: true });
-        await goToDetailOrder.click();
-        let url = await pagee.url();
-        let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
-        let reqURL = ""
-        reqURL = await tempReqURL.replace("?type=pending&category=spare-part&status=Semua%20transaksi", "").replace("?type=pending&category=service-center&status=Semua%20transaksi", "");
-        orderDetailRes = await responseUrl(pagee, reqURL);
-        await pagee.waitForTimeout(1000);
-        await pagee.close();
-    } else if (paymentName.includes("GOPAY")){
-        await page.waitForTimeout(3000);
-        const backToMerchant = await page.waitForXPath("//button[@type='button']",{visible:true});
-        await backToMerchant.click();
-        await page.waitForTimeout(4000);
-        const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
-        if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
-            await page.click(orderPage.detailOrder);
-            let url = await page.url();
+            // const url = await pages.evaluate(() => window.location.href); 
+            const pagee = await browser.newPage();
+            await pagee.goto("https://astraotoshop.com/order-history-list");
+            let newXPath = "//div[@class='sc-1crxk01-0 iCxTTv']//div[1]//div[1]//div[1]//div[1]//span[1]"
+            const goToDetailOrder = await pagee.waitForXPath(newXPath, { visible: true });
+            await goToDetailOrder.click();
+            let url = await pagee.url();
             let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
-            let reqURL = "";
-            reqURL = await tempReqURL.replace("?category=null&paymentType=GOPAY", "").replace("?category=service-center&paymentType=GOPAY", "");
-            orderDetailRes = await responseUrl(page, reqURL);
+            let reqURL = ""
+            reqURL = await tempReqURL.replace("?type=pending&category=spare-part&status=Semua%20transaksi", "").replace("?type=pending&category=service-center&status=Semua%20transaksi", "");
+            orderDetailRes = await responseUrl(pagee, reqURL);
+            await pagee.waitForTimeout(1000);
+            await pagee.close();
+        } else if (paymentName.includes("GOPAY")) {
             await page.waitForTimeout(3000);
+            const backToMerchant = await page.waitForXPath("//button[@type='button']", { visible: true });
+            await backToMerchant.click();
+            await page.waitForTimeout(4000);
+            const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
+            if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
+                await page.click(orderPage.detailOrder);
+                let url = await page.url();
+                let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
+                let reqURL = "";
+                reqURL = await tempReqURL.replace("?category=null&paymentType=GOPAY", "").replace("?category=service-center&paymentType=GOPAY", "");
+                orderDetailRes = await responseUrl(page, reqURL);
+                await page.waitForTimeout(3000);
+            }
         }
-    }
+    } else {
+        orderDetailRes = paymentResp
+        console.log('here error >>', orderDetailRes)
+    }    
+    
     return orderDetailRes;
 
 };

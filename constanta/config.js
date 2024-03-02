@@ -3,7 +3,7 @@ const config = {
   customerURL:'https://astraotoshop.com/customer-dashboard',
   cartURL: 'https://astraotoshop.com/shopping-cart',
   email: 'testing.b2c001@gmail.com',
-  password:'Ipybni07!',
+  password:'Ipybni08!',
   
   
   REACT_APP_ENCRYPTION_KEY_SUMMARY: 'M9QRvYq1Hm&g1&qb6dA#~rZgxW=lEm5f',
