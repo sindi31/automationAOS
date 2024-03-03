@@ -33,13 +33,6 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
         await pages[0].close();
     }
 
-    // await page.setViewport({ width: 1600, height: 1200 });
-    // await page.setViewport({
-    //     width: 1920,
-    //     height: 1080,
-    //     deviceScaleFactor: 0.75
-    //   });
-
     let [loginStatus, getProductCardStatus, addToCartStatus, checklistProductCart, usePointStatus, useCouponStatus, orderStatus] = ["", "", "", "", "", "", ""];
     let [location, initPoint, getProductResponse, addToCartResponse, checklistProductCartResponse, usePointResponse, useCouponResponse, orderResponse, detailProductAfterOrderResp, poinCustAfterOrderResp] =
         ["", "", "", "", "", "", "", "", "", ""];
@@ -62,24 +55,16 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     // const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
     // await recorder.start(savePath);
 
-    // await page.goto(process.env.URL);
-    // await page.goto("chrome://settings/appearance");
-    // await page.waitForTimeout(1000);
-    // await page.click("aria/Page Zoom")
-    // await page.waitForTimeout(10000)
-
 
     await page.goto(config.URL);
 
-
-
-    // const loginResp = await login(page, process.env.email, process.env.password); // login process
     const loginResp = await login(page, config.email, config.password); // login process
 
     for (let i = 0; i < productType.length; i++) {
         if (loginResp.status === 200) {
             loginStatus = true;
             console.log('Login Process >>', loginStatus)
+            console.log('Flow Order & Cancel >> Pembayaran:' + paymentWith + ', point: ' + pointAmount + ', kupon: ' + couponUsed + ', product : ' + productType[i])
 
             cleansingResponse = await cleansingCart(page); // hapus semua produk di keranjang
 
@@ -135,28 +120,32 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
                     await page.waitForTimeout(1000);
 
                     // apply point in cart start
-                    if (data.point > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
+                    console.log('point amout > ', pointAmount)
+
+                    if (pointAmount > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
                         let usePointResp = await usePoint(page, pointAmount);
                         let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
                         usePointResponse = JSON.parse(repUsePointResp);
                         usePointStatus = true;
                         console.log('Use Point Process >>', usePointStatus)
-                    } else if (data.point > 0 && (getProductResponse.data.price * data.QTY) < '50000') {
+                    } else if ((pointAmount > 0 || pointAmount === 'Gunakan Semua') && (getProductResponse.data.price * data.QTY) < '50000') {
                         usePointResponse = 'Tidak memenuhi syarat, minimal pembelanjaan 50.000';
                         usePointStatus = false
                         console.log('Use Point Process >>', usePointStatus)
-                    } else {
+                    } else if (pointAmount === 'Gunakan Semua' && (getProductResponse.data.price * data.QTY) >= '50000') {
                         let usePointResp = await usePoint(page, pointAmount);
                         let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
                         usePointResponse = JSON.parse(repUsePointResp);
                         usePointStatus = true;
                         console.log('Use Point Process >>', usePointStatus)
+                    } else {
+                        usePointResponse = 'Tidak Menggunakan Poin';
+                        console.log('Use Point Process>>', usePointResponse);
                     }
                     await page.waitForTimeout(1000);
                     // apply point in cart end
 
                     // apply coupon in cart start
-                    console.log(couponUsed);
                     if (couponUsed != "") {
                         let useCouponResp = await useCoupon(page, couponUsed);
                         // console.log(useCouponResp[0].status);
@@ -262,7 +251,6 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
 
             poinCustAfterCancelResp = await checkPointHomepage(page); // get point customer after cancel
         }
-        console.log(orderResponse.data.paymentMethod)
 
         recapStatus[i] = {
             login: loginStatus,
@@ -316,13 +304,13 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
             afterCancelTotalSentOutlet: detailProductAfterCancelResp.respMerchant ? detailProductAfterCancelResp.respMerchant.data[indexCancel].totalSent : 'It is not product service order',
 
             balancePoint: initPoint,
-            usedPoint: data.point,
+            usedPoint: pointAmount,
             // usedPoint: usePointResponse.point ? usePointResponse.point : usePointResponse,
             applyPoint: usePointResponse,
             poinAfterOrder: poinCustAfterOrderResp,
             pointAfterCancel: poinCustAfterCancelResp,
 
-            usedCoupon: couponUsed,
+            usedCoupon: couponUsed != '' ? couponUsed : 'Tidak menggunakan kupon',
             useCouponStatus: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
             useCouponData: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : ''
         }
@@ -331,7 +319,6 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
 
-
     // await recorder.stop();
 
     console.log('oke, coba generate html')
@@ -339,12 +326,14 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
     const pdfFilePath = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod, pointAmount, couponUsed);
 
-    const filename = pdfFilePath.replace("D:/AOP/Work/automationAOS/document/", "");
+    const filename = pdfFilePath.replace(config.BASE_DIRECTORY, "");
     console.log(filename)
-    await sendMail(filename, pdfFilePath);
+    // await sendMail(filename, pdfFilePath);
+
+    let attachmentData = { filename, pdfFilePath }
 
     await browser.close();
-    return pdfFilePath;
+    return attachmentData;
     // await page.waitForTimeout(10000)
 
 

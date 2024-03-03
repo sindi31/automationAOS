@@ -1,7 +1,6 @@
 const data = {
-    QTY: "2",
+    QTY: "1",
     isBookingDate: "false",
-    point: "Gunakan Semua",
     coupon: "TESTING132"
 }
 

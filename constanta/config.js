@@ -12,7 +12,11 @@ const config = {
   URL_ADMIN: 'https://admin.astraotoshop.com/',
   ADMIN_EMAIL: 'it@aop.com',
   ADMIN_PASS: 'A4OPB2c!!',
-  ADMIN_ORDER_DETAIL_BASE: 'https://admin.astraotoshop.com/sales/order/detail/'
+  ADMIN_ORDER_DETAIL_BASE: 'https://admin.astraotoshop.com/sales/order/detail/',
+
+  // BASE_DIRECTORY: 'D:/AOP/Work/automationAOS/document/',
+  BASE_DIRECTORY: 'C:/Users/DEKSTOP_314ABA7/Documents/NewOneDrive/OneDrive/AUT/document/'
+
 };
 
 

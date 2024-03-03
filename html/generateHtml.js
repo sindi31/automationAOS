@@ -352,13 +352,13 @@ const detailHtml = async (custOrderDetail) => {
                            </tr>
                            <tr>
                               <td colspan="2"></td>
-                              <td style="text-align: left">${custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': 'Point'}</td>
-                              <td>${custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': '- '+custOrderDetail[i].applyPoint.point}</td>
+                              <td style="text-align: left">${custOrderDetail[i].applyPoint === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': 'Point'}</td>
+                              <td>${custOrderDetail[i].applyPoint === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': '- '+custOrderDetail[i].applyPoint.point}</td>
                            </tr>
                            <tr>
                               <td colspan="2"></td>
-                              <td style="text-align: left">${custOrderDetail[i].useCouponData != ''? 'Coupon Disc.':'' }</td>
-                              <td>${custOrderDetail[i].useCouponData != ''? '- '+custOrderDetail[i].useCouponData.discount_amount.replace('.00000','') :'' }</td>
+                              <td style="text-align: left">${custOrderDetail[i].useCouponData != ''? custOrderDetail[i].useCouponData != 'Tidak menggunakan kupon'? 'Coupon Disc.':''  :'' }</td>
+                              <td>${custOrderDetail[i].useCouponData != ''? custOrderDetail[i].useCouponData != 'Tidak menggunakan kupon'? '- '+custOrderDetail[i].useCouponData.discount_amount.replace('.00000','') :''  :'' }</td>
                            </tr>
                            <tr>
                               <td colspan="2"></td>

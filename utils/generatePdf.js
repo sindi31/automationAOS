@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import puppeteer from 'puppeteer';
 import { pdf } from 'puppeteer-report';
 import { PDFDocument } from "pdf-lib";
+import config from '../constanta/config.js';
 
 const contentHeader = `
    <span style="font-size: 10px;padding-left : 15px"><i>
@@ -28,34 +29,19 @@ const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     });
     const page = await browser.newPage();
 
-
-    //    const browser = await puppeteer.launch();
-    //    const page = await browser.newPage();
-
     // Read HTML content from file and convert to PDF
     let htmlFilePath = "";
     let pdfFilePath = "";
 
     // await fs.promises.writeFile('../html/page1.html', content);
-    await fs.promises.writeFile('D:/AOP/Work/automationAOS/document/page1.html', content);
+    await fs.promises.writeFile(config.BASE_DIRECTORY+ 'page1.html', content);
 
     console.log('HTML file has been saved!');
-    // htmlFilePath = '../html/page1.html';
-    htmlFilePath = 'D:/AOP/Work/automationAOS/document/page1.html';
+    htmlFilePath = config.BASE_DIRECTORY+ 'page1.html';
 
     // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-    pdfFilePath = 'D:/AOP/Work/automationAOS/document/automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'-'+pointAmount+'-'+couponUsed+'.pdf';
+    pdfFilePath = config.BASE_DIRECTORY+ 'automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'-'+pointAmount+' poin-kupon-'+couponUsed+'.pdf';
 
-    // if (hal === '1') {
-       
-    // } else {
-    //     await fs.promises.writeFile('../html/page2.html', content);
-    //     console.log('HTML file has been saved!');
-    //     htmlFilePath = '..html/page2.html';
-    //     // pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.pdf';
-    //     pdfFilePath = 'document/pdf-page2-' + new Date().toJSON().slice(0, 10) +'.pdf';
-    // }
-    // const contentPdf = await fs.promises.readFile(htmlFilePath, 'utf-8');
     await page.setContent(content, {
         waitUntil: "networkidle0"
     });

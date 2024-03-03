@@ -111,7 +111,7 @@ const dateDifference = async (end, start) => {
     return result;
 }
 
-const sendMail = async (filename, filePath) => {
+const  sendMail = async (dataFile, dataFilePath) => {
     nodemailer.createTestAccount((err, account) => {
         let transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -123,14 +123,15 @@ const sendMail = async (filename, filePath) => {
             }
         });
 
-        // let arrayAttach = [];
-        // for (let i = 0; i < filename.length; i++) {
-        //     arrayAttach[i] = {
-        //         filename: filename,
-        //         path: filePath
-        //     }
-        // }
-        // console.log(arrayAttach)
+        let arrayAttach = [];
+        console.log('file>>', dataFile)
+        for (let i = 0; i < dataFile.length; i++) {
+            arrayAttach[i] = {
+                filename: dataFile[i],
+                path: dataFilePath[i]
+            }
+        }
+        console.log('array >>>',arrayAttach)
 
 
         let mailOptions = {
@@ -140,17 +141,18 @@ const sendMail = async (filename, filePath) => {
             subject: 'AOS Test Report ' + ' 🎉',
             text: 'Automate email for geckoboard report direct to you from Medvine Bot  🎉',
             html: '<b>Automate email for geckoboard report  direct to you from Medvine Bot  🎉</b>',
-            attachments: [
-                {
-                    filename: filename,
-                    path: filePath,
-                }
+            attachments:arrayAttach
+            //  [
+            //     {
+            //         filename: filename,
+            //         path: filePath,
+            //     }
                 // },
                 // {
                 //     filename: filename[1],
                 //     path: filePath[1],
                 // }
-            ]
+            // ]
         };
 
         // send mail with defined transport object

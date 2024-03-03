@@ -11,7 +11,7 @@ const chooseShipment = async (page) => {
     await page.waitForTimeout(4000);
 
     let isShipment = await page.$eval(checkoutPage.toggleShipment, () => true).catch(() => false);
-    console.log(isShipment)
+
     while (isShipment == false) {
         const backToCheckout = await page.waitForXPath("//*[name()='path' and contains(@d,'M8.92711 0')]", { visible: true });
         await backToCheckout.click();
@@ -47,7 +47,6 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
 
     }
     await page.waitForTimeout(2000);
-    console.log(paymentMethod)
     let selectPaymentMethod = "";
     if (paymentMethod === "Mandiri VA") {
         selectPaymentMethod = await page.waitForXPath("//span[normalize-space()='Mandiri VA']", { visible: true });
@@ -101,7 +100,6 @@ const bayarSekarang = async (page, paymentName, browser) => {
     await usePaymentMethod.click();
     let paymentResp =""
     paymentResp = await responseUrl(page, 'payment');
-    console.log(paymentResp.status);
 
     if (paymentResp.status !== 500) {
         if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
@@ -162,7 +160,6 @@ const checkout = async (page, paymentName, productType, browser) => {
 
     const clickCheckout = await page.waitForSelector(cartPage.checkoutButton, { visible: true });
     await clickCheckout.click();
-    // await page.waitForNavigation();
     await page.waitForTimeout(4000);
 
     // console.log(productType);
@@ -172,7 +169,6 @@ const checkout = async (page, paymentName, productType, browser) => {
     }
     await choosePayment(page, paymentName, productType);
     await page.waitForTimeout(3000);
-    console.log('here ok');
 
     const result = await bayarSekarang(page, paymentName, browser);
 
