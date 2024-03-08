@@ -4,9 +4,9 @@ import { sendMail, dateDifference } from "../utils/baseService.js";
 
 const cancelBatalkanVA = (async () => {
 
-    const point = ['Gunakan Semua', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
+    const point = ['5000', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
     const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
-    const paymentMethod = ['CIMB VA']//, 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
+    const paymentMethod = ['CIMB VA', 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
 
     let dataFile = [];
     let dataFilePath = []

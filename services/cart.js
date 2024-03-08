@@ -47,11 +47,14 @@ const usePoint = async (page, Point, productPrice, qty) => {
         let decryptPointResponse = await decryptProcess(usePointResponseRaw.data.iv, usePointResponseRaw.data.encryptedData, "summary");
         let replacePointResp = decryptPointResponse.replace(/(\w+):/g, `"$1":`);
         let jsonPointResp = JSON.parse(replacePointResp);
-        if (usePointResponseRaw.status = 200) {
-            usePointStatus: true
+        console.log('status>>>',usePointResponseRaw.status);
+
+        if (usePointResponseRaw.status === 200) {
+            usePointStatus = true
         } else {
-            usePointStatus: false
+            usePointStatus = false
         }
+        console.log('update status >>',usePointStatus)
 
         usePointResponse = {
             status: usePointResponseRaw.status,
@@ -59,6 +62,7 @@ const usePoint = async (page, Point, productPrice, qty) => {
             usePointStatus: usePointStatus,
             data: jsonPointResp
         }
+        console.log('masuk sini',usePointResponse)
 
     } else {
         usePointResponse = {
@@ -67,7 +71,7 @@ const usePoint = async (page, Point, productPrice, qty) => {
             message: 'Tidak Menggunakan Poin'
         }
     }
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(100000);
 
 
     // if (Point === 'Gunakan Semua') {
