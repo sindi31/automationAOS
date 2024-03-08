@@ -18,19 +18,70 @@ const checklistProduct = async (page) => {
     return 'Checklist Product Cart >>> success'
 }
 
-const usePoint = async (page, Point) => {
-    if (Point === 'Gunakan Semua') {
-        await page.waitForTimeout(2000);
-        await page.click(cartPage.gunakanSemua, {waitUntil: 'domcontentloaded'});
-    } else {
-        const inputPoin = await page.waitForSelector(cartPage.pointField, { visible: true });
-        await inputPoin.type(Point);
-        await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
-    }
+const usePoint = async (page, Point, productPrice, qty) => {
+    let minUsePoinEval = await page.$eval(".sc-w647qe-0.BAMAs", el => el.textContent);
+    let minUsePoin = minUsePoinEval.replace('Minimum Pembelian Rp', '').replace(' ', '').replace('.', '');
+    let usePointResponse = '';
+    let usePointStatus = '';
+    console.log(minUsePoin);
 
-    let usePoinResponse = await responseUrl(page, 'summary');
-    let summaryDecrypted = await decryptProcess(usePoinResponse.data.iv, usePoinResponse.data.encryptedData, "summary");
-    return summaryDecrypted;
+    console.log(Point)
+    console.log('subtotal >> ' + productPrice * qty)
+
+    if ((Point > 0 || Point === 'Gunakan Semua') && (productPrice * qty) < minUsePoin) {
+        usePointResponse = {
+            status: 500,
+            usePointStatus: false,
+            message: 'Tidak memenuhi syarat, minimal pembelanjaan ' + minUsePoin
+        }
+    } else if ((Point > 0 || Point === 'Gunakan Semua') && (productPrice * qty) >= minUsePoin) {
+        if (Point === 'Gunakan Semua') {
+            await page.waitForTimeout(2000);
+            await page.click(cartPage.gunakanSemua, { waitUntil: 'domcontentloaded' });
+        } else {
+            const inputPoin = await page.waitForSelector(cartPage.pointField, { visible: true });
+            await inputPoin.type(Point);
+            await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
+        }
+        let usePointResponseRaw = await responseUrl(page, 'summary');
+        let decryptPointResponse = await decryptProcess(usePointResponseRaw.data.iv, usePointResponseRaw.data.encryptedData, "summary");
+        let replacePointResp = decryptPointResponse.replace(/(\w+):/g, `"$1":`);
+        let jsonPointResp = JSON.parse(replacePointResp);
+        if (usePointResponseRaw.status = 200) {
+            usePointStatus: true
+        } else {
+            usePointStatus: false
+        }
+
+        usePointResponse = {
+            status: usePointResponseRaw.status,
+            message: usePointResponseRaw.message,
+            usePointStatus: usePointStatus,
+            data: jsonPointResp
+        }
+
+    } else {
+        usePointResponse = {
+            status: 404,
+            usePointStatus: '',
+            message: 'Tidak Menggunakan Poin'
+        }
+    }
+    await page.waitForTimeout(1000);
+
+
+    // if (Point === 'Gunakan Semua') {
+    //     await page.waitForTimeout(2000);
+    //     await page.click(cartPage.gunakanSemua, { waitUntil: 'domcontentloaded' });
+    // } else {
+    //     const inputPoin = await page.waitForSelector(cartPage.pointField, { visible: true });
+    //     await inputPoin.type(Point);
+    //     await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
+    // }
+
+
+
+    return usePointResponse;
 }
 
 const useCoupon = async (page, couponName) => {
@@ -39,10 +90,10 @@ const useCoupon = async (page, couponName) => {
 
     // const inputCoupon = await page.waitForXPath(cartPage.couponField, { visible: true });
     await page.keyboard.press("PageDown");
-    const inputCoupon = await page.waitForSelector(cartPage.couponField,{visible:true});
+    const inputCoupon = await page.waitForSelector(cartPage.couponField, { visible: true });
     await page.waitForTimeout(3000);
-    await inputCoupon.type(couponName);    
-   
+    await inputCoupon.type(couponName);
+
     await page.waitForTimeout(3000);
     // const gunakanButton = (await page.$x("//span[@class='sc-w647qe-0 iggsXM']"))[1];
     const gunakanButton = await page.waitForXPath("/html[1]/body[1]/main[1]/div[1]/div[2]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/span[1]");

@@ -24,8 +24,9 @@ import getHtmlData from "./html/generateHtml.js";
 const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     const browser = await puppeteer.launch({
         headless: false,
-        defaultViewport: false,
-        args: ['--start-maximized']
+        defaultViewport: false
+        //,
+        //args: ['--start-maximized']
     });
     const page = await browser.newPage();
     const pages = await browser.pages();
@@ -58,7 +59,7 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
 
     await page.goto(config.URL);
 
-    const loginResp = await login(page, config.email, config.password); // login process
+    let loginResp = await login(page, config.email, config.password); // login process
 
     for (let i = 0; i < productType.length; i++) {
         if (loginResp.status === 200) {
@@ -95,7 +96,7 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
             //get location end
 
             getProductResponse = await getProductDetail(page, productType[i]); // go to PDP
-            // getProductResponse = getProductResp;
+            // console.log(getProductResponse.data)
 
             if (getProductResponse.status === 200) {
                 getProductCardStatus = true;
@@ -122,27 +123,33 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
                     // apply point in cart start
                     console.log('point amout > ', pointAmount)
 
-                    if (pointAmount > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
-                        let usePointResp = await usePoint(page, pointAmount);
-                        let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
-                        usePointResponse = JSON.parse(repUsePointResp);
-                        usePointStatus = true;
-                        console.log('Use Point Process >>', usePointStatus)
-                    } else if ((pointAmount > 0 || pointAmount === 'Gunakan Semua') && (getProductResponse.data.price * data.QTY) < '50000') {
-                        usePointResponse = 'Tidak memenuhi syarat, minimal pembelanjaan 50.000';
-                        usePointStatus = false
-                        console.log('Use Point Process >>', usePointStatus)
-                    } else if (pointAmount === 'Gunakan Semua' && (getProductResponse.data.price * data.QTY) >= '50000') {
-                        let usePointResp = await usePoint(page, pointAmount);
-                        let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
-                        usePointResponse = JSON.parse(repUsePointResp);
-                        usePointStatus = true;
-                        console.log('Use Point Process >>', usePointStatus)
-                    } else {
-                        usePointResponse = 'Tidak Menggunakan Poin';
-                        console.log('Use Point Process>>', usePointResponse);
-                    }
-                    await page.waitForTimeout(1000);
+                    usePointResponse = await usePoint(page, pointAmount,getProductResponse.data.price,data.QTY);
+                    usePointStatus = usePointResponse.usePointStatus;
+                    // let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
+                    // usePointResponse = JSON.parse(repUsePointResp);
+                    console.log(usePointResponse);
+
+                    // if (pointAmount > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
+                    //     let usePointResp = await usePoint(page, pointAmount);
+                    //     let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
+                    //     usePointResponse = JSON.parse(repUsePointResp);
+                    //     usePointStatus = true;
+                    //     console.log('Use Point Process >>', usePointStatus)
+                    // } else if ((pointAmount > 0 || pointAmount === 'Gunakan Semua') && (getProductResponse.data.price * data.QTY) < '50000') {
+                    //     usePointResponse = 'Tidak memenuhi syarat, minimal pembelanjaan 50.000';
+                    //     usePointStatus = false
+                    //     console.log('Use Point Process >>', usePointStatus)
+                    // } else if (pointAmount === 'Gunakan Semua' && (getProductResponse.data.price * data.QTY) >= '50000') {
+                    //     let usePointResp = await usePoint(page, pointAmount);
+                    //     let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
+                    //     usePointResponse = JSON.parse(repUsePointResp);
+                    //     usePointStatus = true;
+                    //     console.log('Use Point Process >>', usePointStatus)
+                    // } else {
+                    //     usePointResponse = 'Tidak Menggunakan Poin';
+                    //     console.log('Use Point Process>>', usePointResponse);
+                    // }
+                    // await page.waitForTimeout(1000);
                     // apply point in cart end
 
                     // apply coupon in cart start
@@ -218,8 +225,7 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
         } else {
             loginStatus = false;
             console.log('Login Process>>', loginStatus);
-
-
+            console.log(loginResp);
         }
 
         let detailProductAfterCancel = "";
@@ -267,29 +273,29 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
         custOrderDetail[i] = {
             location: location,
             productType: productType[i],
-            productName: getProductResponse.data.name,
-            productSKU: getProductResponse.data.sku,
-            productMerchant: getProductResponse.data.merchantName,
-            productPrice: getProductResponse.data.price,
-            productOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].name : 'It is not product service order',
-            orderNumber: orderResponse.data.orderNumber ? orderResponse.data.orderNumber : "",
-            orderDate: orderResponse.data.orderDate ? new Date(orderResponse.data.orderDate).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB" : "",
-            total: orderResponse.data.total ? orderResponse.data.total : "",
-            qty: orderResponse.data.totalQuantity ? orderResponse.data.totalQuantity : "",
-            paymentMethod: orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.paymentMethod : "",
-            vaNumber: orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.vaNumber : "",
-            receiverName: orderResponse.data.paymentMethod ? orderResponse.data.receiverName : '',
-            receiverPhone: orderResponse.data.paymentMethod ? orderResponse.data.receiverPhone : '',
-            address: orderResponse.data.address ? orderResponse.data.address : "",
-            courier: orderResponse.data.shipmentMethod ? orderResponse.data.shipmentMethod.name + " - " + orderResponse.data.shipmentMethod.packages.name : 'It is not spareparts order',
+            productName: getProductResponse.data ? getProductResponse.data.name : '',
+            productSKU: getProductResponse.data ? getProductResponse.data.sku : '',
+            productMerchant: getProductResponse.data ? getProductResponse.data.merchantName : '',
+            productPrice: getProductResponse.data ? getProductResponse.data.price : '',
+            productOutlet: addToCartResponse.merchantResponse ? addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].name : 'It is not product service order' : '',
+            orderNumber: orderResponse.data ? orderResponse.data.orderNumber ? orderResponse.data.orderNumber : "" : '',
+            orderDate: orderResponse.data ? orderResponse.data.orderDate ? new Date(orderResponse.data.orderDate).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB" : "" : '',
+            total: orderResponse.data ? orderResponse.data.total ? orderResponse.data.total : "" : '',
+            qty: orderResponse.data ? orderResponse.data.totalQuantity ? orderResponse.data.totalQuantity : '' : '',
+            paymentMethod: orderResponse.data ? orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.paymentMethod : '' : '',
+            vaNumber: orderResponse.data ? orderResponse.data.paymentMethod ? orderResponse.data.paymentMethod.vaNumber : '' : '',
+            receiverName: orderResponse.data ? orderResponse.data.paymentMethod ? orderResponse.data.receiverName : '' : '',
+            receiverPhone: orderResponse.data ? orderResponse.data.paymentMethod ? orderResponse.data.receiverPhone : '' : '',
+            address: orderResponse.data ? orderResponse.data.address ? orderResponse.data.address : '' : '',
+            courier: orderResponse.data ? orderResponse.data.shipmentMethod ? orderResponse.data.shipmentMethod.name + " - " + orderResponse.data.shipmentMethod.packages.name : 'It is not spareparts order' : '',
             // shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentDetail.detail[1].value + orderResponse.data.paymentDetail.detail[2].value : '-',
-            shippingFee: productType[i] === 'Suku Cadang' ? orderResponse.data.paymentMethod ? orderResponse.data.paymentDetail.detail : '-' : '',
+            shippingFee: orderResponse.data ? productType[i] === 'Suku Cadang' ? orderResponse.data.paymentMethod ? orderResponse.data.paymentDetail.detail : '-' : '' : '',
 
-            initTotalQty: getProductResponse.data.totalQty,
-            initAvailQty: getProductResponse.data.availableQty,
-            initTotalItemOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalItem : 'It is not product service order',
-            initTotalAvailOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalAvailable : 'It is not product service order',
-            initTotalSentOutlet: addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalSent : 'It is not product service order',
+            initTotalQty: getProductResponse.data ? getProductResponse.data.totalQty : '',
+            initAvailQty: getProductResponse.data ? getProductResponse.data.availableQty : '',
+            initTotalItemOutlet: addToCartResponse.merchantResponse ? addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalItem : 'It is not product service order' : '',
+            initTotalAvailOutlet: addToCartResponse.merchantResponse ? addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalAvailable : 'It is not product service order' : '',
+            initTotalSentOutlet: addToCartResponse.merchantResponse ? addToCartResponse.merchantResponse.data ? addToCartResponse.merchantResponse.data[0].totalSent : 'It is not product service order' : '',
 
             afterOrderTotalQty: detailProductAfterOrderResp.productDetailRes ? detailProductAfterOrderResp.productDetailRes.data.totalQty : "",
             afterOrderTotalAvail: detailProductAfterOrderResp.productDetailRes ? detailProductAfterOrderResp.productDetailRes.data.availableQty : "",
@@ -311,10 +317,12 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
             pointAfterCancel: poinCustAfterCancelResp,
 
             usedCoupon: couponUsed != '' ? couponUsed : 'Tidak menggunakan kupon',
-            useCouponStatus: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition,
-            useCouponData: useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : ''
+            useCouponStatus: useCouponResponse[1] ? useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].resUseCoupon.length == 0 ? 'Successfully apply coupon' : useCouponResponse[1].resUseCoupon[0].errorCondition : '',
+            useCouponData: useCouponResponse[1] ? useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : '' : ''
         }
     }
+    console.log(custOrderDetail);
+    console.log(recapStatus);
 
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);

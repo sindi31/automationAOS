@@ -200,7 +200,7 @@ const getSummary = async (custOrderDetail, recapStatus, start, end, diff) => {
          </tr>
          <tr>
             <td>6. Apply Point in Cart</td>
-            <td style="text-align: center">${recapStatus[i].applyPoint === true? '<i class="fas fa-check"></i>':'<i class="fas fa-times"></i>'}</td>
+            <td style="text-align: center">${recapStatus[i].applyPoint === ''?'<i class="fas fa-minus"></i>':recapStatus[i].applyPoint === true? '<i class="fas fa-check"></i>':'<i class="fas fa-times"></i>'}</td>
          </tr>
          <tr>
             <td>7. Apply Coupon in Cart</br></td>
@@ -322,7 +322,7 @@ const detailHtml = async (custOrderDetail) => {
                   </tr>
                   <tr>
                      <td>Point</td>
-                     <td colspan="3">: ${custOrderDetail[i].usedPoint} ( <i>${custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? custOrderDetail[i].applyPoint : 'Successfully apply point'}</i> )</td>
+                     <td colspan="3">: ${custOrderDetail[i].usedPoint} ( <i>${custOrderDetail[i].applyPoint.message === 'Tidak Menggunakan Poin'?'Tidak Menggunakan Poin':custOrderDetail[i].applyPoint.message.includes('Tidak memenuhi syarat, minimal pembelanjaan') ? custOrderDetail[i].applyPoint.message : 'Successfully apply point'}</i> )</td>
                   </tr>
                </div>
                <!-- order-->
@@ -352,8 +352,8 @@ const detailHtml = async (custOrderDetail) => {
                            </tr>
                            <tr>
                               <td colspan="2"></td>
-                              <td style="text-align: left">${custOrderDetail[i].applyPoint === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': 'Point'}</td>
-                              <td>${custOrderDetail[i].applyPoint === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint === 'Tidak memenuhi syarat, minimal pembelanjaan 50.000' ? '': '- '+custOrderDetail[i].applyPoint.point}</td>
+                              <td style="text-align: left">${custOrderDetail[i].applyPoint.message === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint.message.includes('Tidak memenuhi syarat') ? '': 'Point'}</td>
+                              <td>${custOrderDetail[i].applyPoint.message === 'Tidak Menggunakan Poin' ? '': custOrderDetail[i].applyPoint.message.includes('Tidak memenuhi syarat') ? '': '- '+custOrderDetail[i].applyPoint.data.point}</td>
                            </tr>
                            <tr>
                               <td colspan="2"></td>
@@ -415,9 +415,9 @@ const detailHtml = async (custOrderDetail) => {
                            <th>After Order</th>
                            <th>After Cancel</th>
                            <tr>
-                                <td>${custOrderDetail[i].initTotalAvailOutlet === 'It is not product service order' ? custOrderDetail[i].initAvailQty : custOrderDetail[i].initTotalAvailOutlet}</td>
-                                <td>${custOrderDetail[i].afterOrderTotalAvailOutlet === 'It is not product service order' ? custOrderDetail[i].afterOrderTotalAvail : custOrderDetail[i].afterOrderTotalAvailOutlet}</td>
-                                <td>${custOrderDetail[i].afterCancelTotalAvailOutlet === 'It is not product service order' ? custOrderDetail[i].afterCancelTotalAvail : custOrderDetail[i].afterCancelTotalAvailOutlet}</td>
+                                <td>${custOrderDetail[i].initTotalAvailOutlet === 'It is not product service order' || custOrderDetail[i].initTotalAvailOutlet === '' ? custOrderDetail[i].initAvailQty : custOrderDetail[i].initTotalAvailOutlet}</td>
+                                <td>${custOrderDetail[i].afterOrderTotalAvailOutlet === 'It is not product service order'  || custOrderDetail[i].initTotalAvailOutlet === '' ? custOrderDetail[i].afterOrderTotalAvail : custOrderDetail[i].afterOrderTotalAvailOutlet}</td>
+                                <td>${custOrderDetail[i].afterCancelTotalAvailOutlet === 'It is not product service order'  || custOrderDetail[i].initTotalAvailOutlet === '' ? custOrderDetail[i].afterCancelTotalAvail : custOrderDetail[i].afterCancelTotalAvailOutlet}</td>
                            </tr>
                         </table>
                      </td>

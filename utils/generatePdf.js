@@ -34,13 +34,19 @@ const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     let pdfFilePath = "";
 
     // await fs.promises.writeFile('../html/page1.html', content);
-    await fs.promises.writeFile(config.BASE_DIRECTORY+ 'page1.html', content);
+    await fs.promises.writeFile(config.BASE_DIRECTORY + 'page1.html', content);
 
     console.log('HTML file has been saved!');
-    htmlFilePath = config.BASE_DIRECTORY+ 'page1.html';
+    htmlFilePath = config.BASE_DIRECTORY + 'page1.html';
+
+
 
     // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-    pdfFilePath = config.BASE_DIRECTORY+ 'automation-result-'+paymentMethod.replace("/","") +'-' + new Date().toJSON().slice(0, 10) +'-'+pointAmount+' poin-kupon-'+couponUsed+'.pdf';
+    let couponName = couponUsed === '' ? '-Tidak Menggunakan Kupon' : '-kupon=' + couponUsed;
+    let pointUsed = pointAmount === '' ? '-Tidak Menggunakan Poin' : '-poin=' + pointAmount;
+
+    pdfFilePath = config.BASE_DIRECTORY + 'Automation-result-' + new Date().toJSON().slice(0, 10) +'-'+ paymentMethod.replace("/", "") +
+        pointUsed + couponName + '.pdf';
 
     await page.setContent(content, {
         waitUntil: "networkidle0"
@@ -67,8 +73,8 @@ const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
 }
 
 const mergePdf = async (file) => {
-    var pdfBuffer1 = fs.readFileSync('./document/pdf-page1-' + new Date().toJSON().slice(0, 10) +'.pdf');
-    var pdfBuffer2 = fs.readFileSync('./document/pdf-page2-' + new Date().toJSON().slice(0, 10) +'.pdf');
+    var pdfBuffer1 = fs.readFileSync('./document/pdf-page1-' + new Date().toJSON().slice(0, 10) + '.pdf');
+    var pdfBuffer2 = fs.readFileSync('./document/pdf-page2-' + new Date().toJSON().slice(0, 10) + '.pdf');
 
     var pdfsToMerge = [pdfBuffer1, pdfBuffer2]
 
@@ -83,7 +89,7 @@ const mergePdf = async (file) => {
 
     const buf = await mergedPdf.save();        // Uint8Array
 
-    let path = './document/automation-result-' +  new Date().toJSON().slice(0, 10) +'T'+new Date().getHours() + new Date().getMinutes() + '.pdf';
+    let path = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.pdf';
     fs.open(path, 'w', function (err, fd) {
         fs.write(fd, buf, 0, buf.length, null, function (err) {
             fs.close(fd, function () {

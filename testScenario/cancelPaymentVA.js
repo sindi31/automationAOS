@@ -2,19 +2,20 @@ import oneFlowOrderCancel from "../index2.js";
 import puppeteer from "puppeteer-extra";
 import { sendMail, dateDifference } from "../utils/baseService.js";
 
-const cancelBatalkanVA = (async() => {
+const cancelBatalkanVA = (async () => {
 
-    const point = ['5000','Gunakan Semua','Gunakan Semua','3000','',''];
-    const coupon = ['TESTING132','TESTING132','','','TESTING132',''];
-    const paymentMethod =['CIMB VA','BRI VA','Mandiri VA', 'BCA VA','BSI VA'];
-    let dataFile =[];
+    const point = ['Gunakan Semua', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
+    const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
+    const paymentMethod = ['CIMB VA']//, 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
+
+    let dataFile = [];
     let dataFilePath = []
-    let orderCancelationFilePath =[]
-    let startDate =''
+    let orderCancelationFilePath = []
+    let startDate = new Date();
 
     for (let i = 0; i < paymentMethod.length; i++) {
-        startDate = new Date();
-        orderCancelationFilePath[i] = await oneFlowOrderCancel(paymentMethod[i],point[i],[coupon[i]]);
+
+        orderCancelationFilePath[i] = await oneFlowOrderCancel(paymentMethod[i], point[i], [coupon[i]]);
         dataFile[i] = orderCancelationFilePath[i].filename;
         dataFilePath[i] = orderCancelationFilePath[i].pdfFilePath;
 
@@ -26,8 +27,8 @@ const cancelBatalkanVA = (async() => {
     console.log('start >>', startDate)
     console.log('end >>', endDate)
     console.log('duration>>', dateDiff)
-    
-    
+
+
     // console.log('return  data email>>>',dataEmail)
     // console.log('return path>>', dataEmailPath);
 
