@@ -23,10 +23,6 @@ const usePoint = async (page, Point, productPrice, qty) => {
     let minUsePoin = minUsePoinEval.replace('Minimum Pembelian Rp', '').replace(' ', '').replace('.', '');
     let usePointResponse = '';
     let usePointStatus = '';
-    console.log(minUsePoin);
-
-    console.log(Point)
-    console.log('subtotal >> ' + productPrice * qty)
 
     if ((Point > 0 || Point === 'Gunakan Semua') && (productPrice * qty) < minUsePoin) {
         usePointResponse = {
@@ -47,14 +43,12 @@ const usePoint = async (page, Point, productPrice, qty) => {
         let decryptPointResponse = await decryptProcess(usePointResponseRaw.data.iv, usePointResponseRaw.data.encryptedData, "summary");
         let replacePointResp = decryptPointResponse.replace(/(\w+):/g, `"$1":`);
         let jsonPointResp = JSON.parse(replacePointResp);
-        console.log('status>>>',usePointResponseRaw.status);
 
         if (usePointResponseRaw.status === 200) {
             usePointStatus = true
         } else {
             usePointStatus = false
         }
-        console.log('update status >>',usePointStatus)
 
         usePointResponse = {
             status: usePointResponseRaw.status,
@@ -62,7 +56,6 @@ const usePoint = async (page, Point, productPrice, qty) => {
             usePointStatus: usePointStatus,
             data: jsonPointResp
         }
-        console.log('masuk sini',usePointResponse)
 
     } else {
         usePointResponse = {
@@ -71,8 +64,8 @@ const usePoint = async (page, Point, productPrice, qty) => {
             message: 'Tidak Menggunakan Poin'
         }
     }
-    await page.waitForTimeout(100000);
 
+    console.log('pointResponse',usePointResponse)
 
     // if (Point === 'Gunakan Semua') {
     //     await page.waitForTimeout(2000);
@@ -82,9 +75,6 @@ const usePoint = async (page, Point, productPrice, qty) => {
     //     await inputPoin.type(Point);
     //     await page.click(cartPage.usePointButton, { waitUntil: 'domcontentloaded' });
     // }
-
-
-
     return usePointResponse;
 }
 
@@ -94,16 +84,16 @@ const useCoupon = async (page, couponName) => {
 
     // const inputCoupon = await page.waitForXPath(cartPage.couponField, { visible: true });
     await page.keyboard.press("PageDown");
-    const inputCoupon = await page.waitForSelector(cartPage.couponField, { visible: true });
-    await page.waitForTimeout(3000);
+    const inputCoupon = await page.waitForSelector(cartPage.couponField);
+    await page.waitForTimeout(2000);
     await inputCoupon.type(couponName);
 
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(2000);
     // const gunakanButton = (await page.$x("//span[@class='sc-w647qe-0 iggsXM']"))[1];
     const gunakanButton = await page.waitForXPath("/html[1]/body[1]/main[1]/div[1]/div[2]/div[2]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/span[1]");
 
     // const gunakanButton = await page.waitForSelector(cartPage.useCouponButton,{visible:true});
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     await gunakanButton.click();
 
     const baseURL = 'list?code=';

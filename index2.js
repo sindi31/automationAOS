@@ -24,9 +24,8 @@ import getHtmlData from "./html/generateHtml.js";
 const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     const browser = await puppeteer.launch({
         headless: false,
-        defaultViewport: false
-        //,
-        //args: ['--start-maximized']
+        defaultViewport: false,
+        args: ['--start-maximized']
     });
     const page = await browser.newPage();
     const pages = await browser.pages();
@@ -52,9 +51,9 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     let indexOrder = "";
     let indexCancel = "";
 
-    // const recorder = new PuppeteerScreenRecorder(page); // Config is optional
-    // const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
-    // await recorder.start(savePath);
+    const recorder = new PuppeteerScreenRecorder(page); // Config is optional
+    const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
+    await recorder.start(savePath);
 
 
     await page.goto(config.URL);
@@ -121,13 +120,11 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
                     await page.waitForTimeout(1000);
 
                     // apply point in cart start
-                    console.log('point amout > ', pointAmount)
 
                     usePointResponse = await usePoint(page, pointAmount,getProductResponse.data.price,data.QTY);
                     usePointStatus = usePointResponse.usePointStatus;
                     // let repUsePointResp = usePointResp.replace(/(\w+):/g, `"$1":`);
                     // usePointResponse = JSON.parse(repUsePointResp);
-                    console.log(usePointResponse);
 
                     // if (pointAmount > 0 && (getProductResponse.data.price * data.QTY) >= '50000') {
                     //     let usePointResp = await usePoint(page, pointAmount);
@@ -210,6 +207,7 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
                     } else {
                         orderStatus = false;
                         console.log('Order Process>>', orderStatus);
+                        console.log(orderResponse)
 
                     }
                 } else {
@@ -327,7 +325,7 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
 
-    // await recorder.stop();
+    await recorder.stop();
 
     console.log('oke, coba generate html')
 
