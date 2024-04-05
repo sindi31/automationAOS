@@ -104,7 +104,7 @@ const bayarSekarang = async (page, paymentName, browser) => {
     if (paymentResp.status !== 500) {
         if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
             console.log('here Alfa')
-            // await page.waitForTimeout(5000);
+            await page.waitForTimeout(5000);
             await page.waitForSelector(orderPage.orderCreatedMsg);
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
             console.log('coba1');
