@@ -65,7 +65,7 @@ const usePoint = async (page, Point, productPrice, qty) => {
         }
     }
 
-    console.log('pointResponse',usePointResponse)
+    // console.log('pointResponse',usePointResponse)
 
     // if (Point === 'Gunakan Semua') {
     //     await page.waitForTimeout(2000);

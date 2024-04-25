@@ -10,9 +10,12 @@ import { sendMail, dateDifference } from "../utils/baseService.js";
 
 const cancelBatalkanVA = (async () => {
 
-    const point = ['5000', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
-    const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
-    const paymentMethod = ['CIMB VA', 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
+    // const point = ['7000', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
+    // const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
+    // const paymentMethod = ['CIMB VA', 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
+    const point = ['Gunakan Semua',''];
+    const coupon = ['','TESTING132'];
+    const paymentMethod = ['Mandiri VA','BSI VA'];
 
     let dataFile = [];
     let dataFilePath = []
@@ -25,19 +28,11 @@ const cancelBatalkanVA = (async () => {
         dataFile[i] = orderCancelationFilePath[i].filename;
         dataFilePath[i] = orderCancelationFilePath[i].pdfFilePath;
 
-
     }
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
+    let timeExecution = { startDate, endDate, dateDiff };
 
-    console.log('start >>', startDate)
-    console.log('end >>', endDate)
-    console.log('duration>>', dateDiff)
-
-
-    // console.log('return  data email>>>',dataEmail)
-    // console.log('return path>>', dataEmailPath);
-
-    await sendMail(dataFile, dataFilePath);
+    await sendMail(dataFile, dataFilePath, timeExecution);
 
 })();

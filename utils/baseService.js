@@ -45,7 +45,7 @@ const cleansingCart = async (page) => {
 };
 
 const getLocation = async (page) => {
-    
+
     const loc = (await page.$x(locationSelector.jakartaSelatan))[0];
     await loc.click();
     const getLocationResponse = await responseUrl(page, "location?latitude=-6.257406049902196&longitude=106.85370663038196");
@@ -85,7 +85,7 @@ const getCurrentLocation = async (page) => {
     let location = JSON.parse(repLocation);
     let latitude = location.latitude;
     let longitude = location.longitude;
-    
+
 
     const useCurrentLoc2 = await page.waitForXPath("//button[normalize-space()='Gunakan lokasi saya saat ini']");
     await useCurrentLoc2.click();
@@ -111,8 +111,36 @@ const dateDifference = async (end, start) => {
     return result;
 }
 
-const  sendMail = async (dataFile, dataFilePath) => {
+const sendMail = async (dataFile, dataFilePath, timeExecution) => {
     nodemailer.createTestAccount((err, account) => {
+        let bodyHtml =
+        `
+        <!DOCTYPE html>
+        <html>
+           <head>
+           </head>
+           <body>
+              <p><i>This is an automatic message for the Astraotoshop automation test with detail: </i></p>
+              <table>
+                 <tr>
+                    <td style="width: 10%;">Start </td>
+                    <td>: ${timeExecution.startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" })} WIB </td>
+                 </tr>
+                 <tr>
+                    <td>End </td>
+                    <td>: ${timeExecution.endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" })} WIB </td>
+                 </tr>
+                 <tr>
+                    <td>Duration</td>
+                    <td>: ${timeExecution.dateDiff.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" })}</td>
+                 </tr>
+              </table>
+              <p><b>PDF documentation attached</b></p>
+              <p>Thank you 😊</p>
+           </body>
+        </html>
+
+        `
         let transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
@@ -124,35 +152,23 @@ const  sendMail = async (dataFile, dataFilePath) => {
         });
 
         let arrayAttach = [];
-        console.log('file>>', dataFile)
         for (let i = 0; i < dataFile.length; i++) {
             arrayAttach[i] = {
                 filename: dataFile[i],
                 path: dataFilePath[i]
             }
         }
-        console.log('array >>>',arrayAttach)
 
 
         let mailOptions = {
             from: 'sindi.wibowo31@gmail.com',
             to: 'nakana.lili31@gmail.com',
             cc: '',
-            subject: 'AOS Test Report ' + ' 🎉',
-            text: 'Automate email for geckoboard report direct to you from Medvine Bot  🎉',
-            html: '<b>Automate email for geckoboard report  direct to you from Medvine Bot  🎉</b>',
-            attachments:arrayAttach
-            //  [
-            //     {
-            //         filename: filename,
-            //         path: filePath,
-            //     }
-                // },
-                // {
-                //     filename: filename[1],
-                //     path: filePath[1],
-                // }
-            // ]
+            subject: 'AOS Test Report ' ,
+            // text: 'Automate email for geckoboard report direct to you from Medvine Bot  🎉',
+            // html: '<b>Automate email for geckoboard report  direct to you from Medvine Bot  🎉</b>',
+            html: bodyHtml,
+            attachments: arrayAttach
         };
 
         // send mail with defined transport object

@@ -51,12 +51,13 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
     let indexOrder = "";
     let indexCancel = "";
 
-    const recorder = new PuppeteerScreenRecorder(page); // Config is optional
-    const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
-    await recorder.start(savePath);
+    // const recorder = new PuppeteerScreenRecorder(page); // Config is optional
+    // const savePath = './document/automation-result-' + new Date().toJSON().slice(0, 10) + 'T' + new Date().getHours() + new Date().getMinutes() + '.mp4';
+    // await recorder.start(savePath);
 
 
     await page.goto(config.URL);
+    // page.setDefaultNavigationTimeout(0);
 
     let loginResp = await login(page, config.email, config.password); // login process
 
@@ -319,21 +320,18 @@ const oneFlowOrderCancel = async (paymentWith, pointAmount, couponUsed) => {
             useCouponData: useCouponResponse[1] ? useCouponResponse === 'Tidak menggunakan kupon' ? 'Tidak menggunakan kupon' : useCouponResponse[1].discountDetail[0] ? useCouponResponse[1].discountDetail[0] : '' : ''
         }
     }
-    console.log(custOrderDetail);
-    console.log(recapStatus);
+    // console.log(custOrderDetail);
+    // console.log(recapStatus);
 
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
 
-    await recorder.stop();
-
-    console.log('oke, coba generate html')
+    // await recorder.stop();
 
     const htmlResult = await getHtmlData(custOrderDetail, recapStatus, startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB", dateDiff);
     const pdfFilePath = await generatePdf(htmlResult, orderResponse.data.paymentMethod.paymentMethod, pointAmount, couponUsed);
 
     const filename = pdfFilePath.replace(config.BASE_DIRECTORY, "");
-    console.log(filename)
     // await sendMail(filename, pdfFilePath);
 
     let attachmentData = { filename, pdfFilePath }

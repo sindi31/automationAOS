@@ -103,22 +103,22 @@ const bayarSekarang = async (page, paymentName, browser) => {
 
     if (paymentResp.status !== 500) {
         if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
-            console.log('here Alfa')
+            // console.log('here Alfa')
             await page.waitForTimeout(5000);
             await page.waitForSelector(orderPage.orderCreatedMsg);
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
-            console.log('coba1');
+            // console.log('coba1');
             if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
                 await page.click(orderPage.detailOrder);
-                console.log('test di sini')
+                // console.log('test di sini')
                 let url = await page.url();
-                console.log(url)
+                // console.log(url)
                 let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
                 let reqURL = "";
                 reqURL = await tempReqURL.replace("?category=spare-part&paymentType=VA", "").replace("?category=service-center&paymentType=VA", "").replace("?category=home-service&paymentType=VA", "").replace("?category=spare-part&paymentType=O2O", "").replace("?category=service-center&paymentType=O2O", "");
                 orderDetailRes = await responseUrl(page, reqURL);
                 await page.waitForTimeout(3000);
-                console.log('coba2');
+                // console.log('coba2');
 
             }
         } else if (paymentName.includes("Credit")) {
@@ -143,6 +143,7 @@ const bayarSekarang = async (page, paymentName, browser) => {
             await page.waitForTimeout(2000);
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
             if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
+                await page.waitForTimeout(2000);
                 await page.click(orderPage.detailOrder);
                 let url = await page.url();
                 let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");

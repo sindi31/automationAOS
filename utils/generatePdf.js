@@ -22,6 +22,10 @@ const contentFooter =
 
 const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     // Save HTML content to a file
+
+    // console.log('kupon:',couponUsed[0]);
+    // console.log('point:',pointAmount);
+
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: false,
@@ -34,18 +38,24 @@ const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     let pdfFilePath = "";
 
     // await fs.promises.writeFile('../html/page1.html', content);
-    await fs.promises.writeFile(config.BASE_DIRECTORY + 'page1.html', content);
-
-    console.log('HTML file has been saved!');
+    await fs.promises.writeFile(config.BASE_DIRECTORY + 'page.html', content);
     htmlFilePath = config.BASE_DIRECTORY + 'page1.html';
 
 
 
     // pdfFilePath = 'document/pdf-download-page1-' + new Date().toJSON().slice(0, 10).replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-    let couponName = couponUsed === '' ? '-Tidak Menggunakan Kupon' : '-kupon=' + couponUsed;
+    let couponName = couponUsed[0] === '' ? '-Tidak Menggunakan Kupon' : '-kupon=' + couponUsed;
     let pointUsed = pointAmount === '' ? '-Tidak Menggunakan Poin' : '-poin=' + pointAmount;
 
-    pdfFilePath = config.BASE_DIRECTORY + 'Automation-result-' + new Date().toJSON().slice(0, 10) +'-'+ paymentMethod.replace("/", "") +
+    await fs.access(config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10), function (err) {
+        if (err && err.code === 'ENOENT') {
+            fs.mkdir(config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10), { recursive: true }, (err) => {
+                if (err) throw err;
+            })
+        }
+    });
+
+    pdfFilePath = config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10)+'/' + 'Result-' + new Date().toJSON().slice(0, 10) +'-'+ paymentMethod.replace("/", "") +
         pointUsed + couponName + '.pdf';
 
     await page.setContent(content, {
