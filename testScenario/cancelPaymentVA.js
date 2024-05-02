@@ -13,9 +13,9 @@ const cancelBatalkanVA = (async () => {
     // const point = ['7000', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
     // const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
     // const paymentMethod = ['CIMB VA', 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
-    const point = ['Gunakan Semua',''];
-    const coupon = ['','TESTING132'];
-    const paymentMethod = ['Mandiri VA','BSI VA'];
+    const point = ['Gunakan Semua'];
+    const coupon = ['TESTING132'];
+    const paymentMethod = ['Mandiri VA'];
 
     let dataFile = [];
     let dataFilePath = []
