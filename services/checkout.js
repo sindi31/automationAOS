@@ -100,10 +100,10 @@ const bayarSekarang = async (page, paymentName, browser) => {
     await usePaymentMethod.click();
     let paymentResp = ""
     paymentResp = await responseUrl(page, 'payment');
+    console.log('paymentName',paymentName)
 
     if (paymentResp.status !== 500) {
         if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
-            // console.log('here Alfa')
             await page.waitForTimeout(5000);
             await page.waitForSelector(orderPage.orderCreatedMsg);
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
@@ -124,23 +124,25 @@ const bayarSekarang = async (page, paymentName, browser) => {
         } else if (paymentName.includes("Credit")) {
             await page.waitForTimeout(3000);
             // const url = await pages.evaluate(() => window.location.href); 
-            const pagee = await browser.newPage();
-            await pagee.goto("https://astraotoshop.com/order-history-list");
+            const page2 = await browser.newPage();
+            await page2.goto("https://astraotoshop.com/order-history-list");
             let newXPath = "//div[@class='sc-1crxk01-0 iCxTTv']//div[1]//div[1]//div[1]//div[1]//span[1]"
-            const goToDetailOrder = await pagee.waitForXPath(newXPath, { visible: true });
+            const goToDetailOrder = await page2.waitForXPath(newXPath, { visible: true });
             await goToDetailOrder.click();
-            let url = await pagee.url();
+            let url = await page2.url();
             let tempReqURL = await url.replace("https://astraotoshop.com/order-detail/", "https://api.astraotoshop.com/v1/order-service/public/orders/");
             let reqURL = ""
             reqURL = await tempReqURL.replace("?type=pending&category=spare-part&status=Semua%20transaksi", "").replace("?type=pending&category=service-center&status=Semua%20transaksi", "");
-            orderDetailRes = await responseUrl(pagee, reqURL);
-            await pagee.waitForTimeout(1000);
-            await pagee.close();
+            orderDetailRes = await responseUrl(page2, reqURL);
+            await page2.waitForTimeout(1000);
+            await page2.close();
         } else if (paymentName.includes("GOPAY")) {
             await page.waitForTimeout(3000);
-            const backToMerchant = await page.waitForXPath("//button[@type='button']", { visible: true });
+            // const backToMerchant = await page.waitForXPath("//button[normalize-space()='Back']']");
+            const backToMerchant = await page.waitForSelector("button:nth-child(2)");
+            console.log('here2')
             await backToMerchant.click();
-            await page.waitForTimeout(2000);
+            await page.waitForTimeout(4000);
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
             if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
                 await page.waitForTimeout(2000);

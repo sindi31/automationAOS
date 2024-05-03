@@ -3,23 +3,18 @@ import puppeteer from "puppeteer-extra";
 import { sendMail, dateDifference } from "../utils/baseService.js";
 
 
-
-
-
-
-
 const cancelBatalkanVA = (async () => {
 
     // const point = ['7000', 'Gunakan Semua', 'Gunakan Semua', '3000', '', ''];
     // const coupon = ['TESTING132', 'TESTING132', '', '', 'TESTING132', ''];
     // const paymentMethod = ['CIMB VA', 'BRI VA', 'Mandiri VA', 'BCA VA', 'BSI VA', 'Permata VA'];
-    const point = ['Gunakan Semua'];
+    const point = ['5000'];
     const coupon = ['TESTING132'];
-    const paymentMethod = ['Mandiri VA'];
+    const paymentMethod = ['GOPAY'];
 
     let dataFile = [];
-    let dataFilePath = []
-    let orderCancelationFilePath = []
+    let dataFilePath = [];
+    let orderCancelationFilePath = [];
     let startDate = new Date();
 
     for (let i = 0; i < paymentMethod.length; i++) {

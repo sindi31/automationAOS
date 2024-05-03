@@ -24,6 +24,7 @@
     "puppeteer-extra-plugin-recaptcha": "^3.6.8",
     "puppeteer-report": "^3.1.0",
     "puppeteer-screen-recorder": "^2.1.2",
-    "url": "^0.11.3"
+    "url": "^0.11.3",
+    "xlsx": "^0.18.5"
   }
 }
