@@ -87,7 +87,7 @@ const oneFlowOrderCancel = async (qty, urlKeySukuCadang, urlKeyLayananBengkel, u
 
             // get location
             if (productType[i] === 'Layanan Bengkel') {
-                location = await getCurrentLocation(page);
+                location = await getCurrentLocation(page,loginResp.response.data.accessToken);
                 if (location.getLocationResponse.status === 200) {
                     getLocationStatus = true;
                 } else {

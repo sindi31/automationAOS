@@ -68,7 +68,7 @@ const getLocation = async (page) => {
     // console.log('Get Location >>>', getLocationResponse);
 }
 
-const getCurrentLocation = async (page) => {
+const getCurrentLocation = async (page, token) => {
 
     let start = performance.now();
 
@@ -85,7 +85,7 @@ const getCurrentLocation = async (page) => {
         getLocationIcon.click(),
         page.waitForNavigation({ waitUntil: "networkidle2" })
     ])
-    await page.waitForTimeout(1000);
+    // await page.waitForTimeout(1000);
 
     const useCurrentLoc = await page.waitForXPath("//button[normalize-space()='Gunakan lokasi saya saat ini']");
     await useCurrentLoc.click();
@@ -97,19 +97,38 @@ const getCurrentLocation = async (page) => {
     let location = JSON.parse(repLocation);
     let latitude = location.latitude;
     let longitude = location.longitude;
+    
+    const getLocation = await fetch("https://api.astraotoshop.com/v1/integration-service/public/location?latitude="+location.latitude+"&longitude="+location.longitude, { 
+        "headers": { 
+          "accept": "application/json", 
+          "accept-language": "undefined", 
+          "authorization": "Bearer "+token, 
+          "content-type": "application/json", 
+          "sec-ch-ua": "\"Opera\";v=\"109\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"123\"", 
+          "sec-ch-ua-mobile": "?0", 
+          "sec-ch-ua-platform": "\"Windows\"" 
+        }, 
+        "referrer": "https://astraotoshop.com/", 
+        "referrerPolicy": "strict-origin-when-cross-origin", 
+        "body": null, 
+        "method": "GET", 
+        "mode": "cors", 
+        "credentials": "include" 
+      }); 
+ 
+    const getLocationResponse = await getLocation.json();
 
+    // const useCurrentLoc2 = await page.waitForXPath("//button[normalize-space()='Gunakan lokasi saya saat ini']");
+    // await useCurrentLoc2.click();
+    // const getLocationResponse = await responseUrl(page, "location?latitude=" + latitude + "&longitude=" + longitude);
+    // // console.log(getLocationResponse);
+    // await page.waitForTimeout(1000);
 
-    const useCurrentLoc2 = await page.waitForXPath("//button[normalize-space()='Gunakan lokasi saya saat ini']");
-    await useCurrentLoc2.click();
-    const getLocationResponse = await responseUrl(page, "location?latitude=" + latitude + "&longitude=" + longitude);
-    // console.log(getLocationResponse);
-    await page.waitForTimeout(1000);
-
-    if (getLocationResponse.status === 200) {
-        await page.waitForTimeout(1000);
-        const backToHome = (await page.$x(locationSelector.backButton))[0];
-        await backToHome.click();
-    }
+    // if (getLocationResponse.status === 200) {
+    //     await page.waitForTimeout(1000);
+    //     const backToHome = (await page.$x(locationSelector.backButton))[0];
+    //     await backToHome.click();
+    // }
     let end = performance.now();
     let duration = await timeCalc(end, start);
 
