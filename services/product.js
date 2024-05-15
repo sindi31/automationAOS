@@ -2,7 +2,7 @@ import { plpSelector, shortcut, productDetailPage, locationSelector } from "../c
 import dotenv from "dotenv";
 dotenv.config();
 import puppeteer from 'puppeteer';
-import { getCurrentLocation } from "../utils/baseService.js";
+import { getCurrentLocation, timeCalc } from "../utils/baseService.js";
 import config from "../constanta/config.js";
 
 async function responseUrl(page, xhr) {
@@ -29,11 +29,11 @@ const getProductAfterProcess = async (urlKey, productType, detail) => {
   }
 
   let newURL = await config.PRODUCT_URL_BASE.concat(urlKey);
-  await page.goto(newURL,{waitUntil: "domcontentloaded"});
+  await page.goto(newURL, { waitUntil: "domcontentloaded" });
   let productDetailRes = await responseUrl(page, page.url().replace("https://astraotoshop.com/product/", "https://api.astraotoshop.com/v1/product-service/card/"));
   // await page.waitForTimeout(3000);
 
-  
+
   // let merchantURL = "merchant?lat="+newLocation.latitude+"&long="+newLocation.longitude+"&productID="+detail;
   // console.log(merchantURL);
 
@@ -52,7 +52,7 @@ const getProductAfterProcess = async (urlKey, productType, detail) => {
   return { productDetailRes, respMerchant };
 }
 
-const newGetProductAfterProcess = async (urlKey, productType,  browser,detail,newLocation) => {
+const newGetProductAfterProcess = async (urlKey, productType, browser, detail, newLocation) => {
   // const browser = await puppeteer.launch({ headless: false });
   const page2 = await browser.newPage();
   // const pages = await browser.pages();
@@ -64,7 +64,7 @@ const newGetProductAfterProcess = async (urlKey, productType,  browser,detail,ne
   // }
 
   let newURL = await config.PRODUCT_URL_BASE.concat(urlKey);
-  await page2.goto(newURL,{waitUntil: "domcontentloaded"});
+  await page2.goto(newURL, { waitUntil: "domcontentloaded" });
   let productDetailRes = await responseUrl(page2, page2.url().replace("https://astraotoshop.com/product/", "https://api.astraotoshop.com/v1/product-service/card/"));
   // await page.waitForTimeout(3000);
   // let merchantURL = "merchant?lat="+newLocation.latitude+"&long="+newLocation.longitude+"&productID="+detail;
@@ -87,6 +87,8 @@ const newGetProductAfterProcess = async (urlKey, productType,  browser,detail,ne
 
 const getProductDetail = async (page, productType) => {
   // process.env.PRODUCT_URL_BASE.concat(productSlug);
+  let start = performance.now();
+
   if (productType === 'Homeservice') {
     const shortcutMenu = await page.waitForXPath(shortcut.homeservice);
     await shortcutMenu.click();
@@ -102,24 +104,26 @@ const getProductDetail = async (page, productType) => {
   const selectProduct = await page.waitForSelector(plpSelector.homeserviceProduct);
   await selectProduct.click();
 
-  // //click product by parameterize productName XPath
-  // const productName ="Voucher Shell Helix Astra Oil 0W20 SN+4 Ltr+Pemasangan (Oli untuk Mobil Bensin)"; //parameterize
-  // const substringProduct = await productName.substring(0,50);
-  // const productXPath = "//div[@class='sc-1crxk01-0 lkwwJy sc-dfsrp1-1 hRwfhN']//span[@class='sc-w647qe-0 hTvPqe'][contains(text(),".concat("'",substringProduct,"')]");
-  // const shortcutt = await page.waitForXPath(productXPath);
-
   let url = await page.url();
   const reqURL = await page.url().replace("https://astraotoshop.com/product/", "https://api.astraotoshop.com/v1/product-service/card/");
   // console.log(reqURL);
   let productDetailRes = await responseUrl(page, reqURL);
+
+  let end = performance.now();
+  let duration = await timeCalc(end, start);
   await page.waitForTimeout(1000);
 
-  return productDetailRes;
+  return {
+    result: productDetailRes,
+    duration: duration
+  };
 
 };
 
 const addtoCart = async (page, qty, productType, isBookingDate, latitude, longitude, productId) => {
   await page.waitForTimeout(1000);
+
+  let start = performance.now();
   const addToCart = await page.waitForXPath(productDetailPage.addToCartButton, {
     visible: true
   });
@@ -145,22 +149,55 @@ const addtoCart = async (page, qty, productType, isBookingDate, latitude, longit
       await toggleBooking.click();
     }
   }
-  //kurang else kalau pake bookingData, cari dulu caranya ya Siin!!
-
-  //get Merchant
-  // const selectMerchant= await page.waitForSelector(".sc-1crxk01-0.dBppZs");
-  // await selectMerchant.click();
-  // await selectMerchant.type("PEJATEN");
-  // await page.waitForTimeout(1000);
-  // await await page.keyboard.press('Enter');
-  // await page.waitForTimeout(5000);
-
 
   const cartButton = await page.waitForXPath(productDetailPage.addToCart, { visible: true });
   await cartButton.click();
 
   let respAddToCart = await responseUrl(page, 'https://api.astraotoshop.com/v1/cart-service/cart');
-  return { respAddToCart, merchantResponse };
+  let end = performance.now();
+  let duration = await timeCalc(end, start);
+
+  return {
+    result: respAddToCart,
+    merchant: merchantResponse,
+    duration: duration
+  };
 }
 
-export { getProductDetail, addtoCart, getProductAfterProcess, newGetProductAfterProcess }
+
+const newGetPDP = async (page, urlKey, token, state) => {
+  let start = performance.now();
+  if (state === 'PDP') {
+    await page.goto(config.PRODUCT_URL_BASE+urlKey);
+  }
+  const fetchData = await fetch("https://api.astraotoshop.com/v1/product-service/card/"+urlKey, {
+    "headers": {
+      "accept": "application/json",
+      "accept-language": "undefined",
+      "authorization": "Bearer "+token,
+      "content-type": "application/json",
+      "sec-ch-ua": "\"Opera\";v=\"109\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"123\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\""
+    },
+    "referrer": "https://astraotoshop.com/",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "body": null,
+    "method": "GET",
+    "mode": "cors",
+    "credentials": "include"
+  });
+
+  let getProductDetailResponse = await fetchData.json();
+  let end = performance.now();
+  let duration = await timeCalc(end, start);
+
+  return {
+    result: getProductDetailResponse,
+    duration: duration
+  }
+}
+
+export { getProductDetail, addtoCart, getProductAfterProcess, newGetProductAfterProcess, newGetPDP }
+
+

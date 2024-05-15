@@ -1,14 +1,15 @@
-import { responseUrl } from "../utils/baseService.js";
+import { responseUrl, timeCalc } from "../utils/baseService.js";
 import { cartPage } from "../constanta/selectorList.js";
 import { checkoutPage, orderPage } from "../constanta/selectorList.js";
 import puppeteer from "puppeteer";
+import { newGetPDP } from "./product.js";
 
 
 const chooseShipment = async (page) => {
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(3000);
     const listShippingMethod = await page.waitForXPath(checkoutPage.shippingMethodButton, { visible: true });
     await listShippingMethod.click();
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(2000);
 
     let isShipment = await page.$eval(checkoutPage.toggleShipment, () => true).catch(() => false);
 
@@ -32,7 +33,8 @@ const chooseShipment = async (page) => {
 }
 const choosePayment = async (page, paymentMethod, typeOfProduct) => {
     await page.keyboard.press("PageDown");
-    await page.waitForSelector(".sc-1crxk01-0.uSUpG.sc-dfsrp1-9.ieiNxl", { visible: true });
+    // await page.waitForSelector(".sc-1crxk01-0.uSUpG.sc-dfsrp1-9.ieiNxl", { visible: true });
+    await page.waitForSelector(".sc-1crxk01-0.uSUpG.sc-dfsrp1-9.ieiNxl");
     await page.waitForTimeout(2000)
 
     if (typeOfProduct === 'Suku Cadang') {
@@ -85,7 +87,9 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
     page.waitForTimeout(3000);
 
     //klik Gunakan
-    const usePaymentMethod = await page.waitForXPath(checkoutPage.useButton, { visible: true, timeout: 1000 });
+    // const usePaymentMethod = await page.waitForXPath(checkoutPage.useButton, { visible: true, timeout: 1000 });
+    const usePaymentMethod = await page.waitForXPath(checkoutPage.useButton, { timeout: 1000 });
+
     await Promise.all([
         usePaymentMethod.click(),
         page.waitForNavigation()
@@ -93,14 +97,15 @@ const choosePayment = async (page, paymentMethod, typeOfProduct) => {
     await page.waitForTimeout(1000);
 };
 
-const bayarSekarang = async (page, paymentName, browser) => {
+const bayarSekarang = async (page, paymentName, browser, urlKey, productType, accessToken) => {
     let orderDetailRes = "";
+    let paymentResp = "";
+    let getDetailProduct = "";
     const usePaymentMethod = await page.waitForSelector(checkoutPage.paymentNowButton, { visible: true });
     // await Promise.all([usePaymentMethod.click(), page.waitForNavigation()]);
     await usePaymentMethod.click();
-    let paymentResp = ""
+
     paymentResp = await responseUrl(page, 'payment');
-    console.log('paymentName',paymentName)
 
     if (paymentResp.status !== 500) {
         if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
@@ -109,6 +114,10 @@ const bayarSekarang = async (page, paymentName, browser) => {
             const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
             // console.log('coba1');
             if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
+                getDetailProduct = await newGetPDP(page, urlKey, productType, accessToken);
+                console.log('Data After Order', getDetailProduct);
+
+                await page.waitForTimeout(1000000);
                 await page.click(orderPage.detailOrder);
                 // console.log('test di sini')
                 let url = await page.url();
@@ -160,28 +169,95 @@ const bayarSekarang = async (page, paymentName, browser) => {
         console.log('here error >>', orderDetailRes)
     }
 
-    return orderDetailRes;
+    return { orderDetailRes }
 
 };
 
+const newBayarSekarang = async (page, paymentName, browser, urlKey, productType, accessToken) => {
+    let orderDetailRes = "";
+    let paymentResp = "";
+    let getDetailProductAfterOrder = "";
+    const usePaymentMethod = await page.waitForSelector(checkoutPage.paymentNowButton, { visible: true });
+    await usePaymentMethod.click();
 
-const checkout = async (page, paymentName, productType, browser) => {
+    paymentResp = await responseUrl(page, 'payment');
 
-    const clickCheckout = await page.waitForSelector(cartPage.checkoutButton, { visible: true });
+    // if (paymentResp.status !== 500) {
+    //     if (paymentName.includes("VA") || paymentName.includes("Alfa")) {
+    //         await page.waitForTimeout(5000);
+    //         await page.waitForSelector(orderPage.orderCreatedMsg);
+    //         const message = await page.$eval(orderPage.orderCreatedMsg, el => el.textContent);
+    //         // console.log('coba1');
+    //         if (message == 'Hore pesanan telah dibuat! Yuk bayar pesananmu sekarang!') {
+    //             getDetailProductAfterOrder = await newGetPDP(page, urlKey, productType, accessToken);
+    //             // console.log('Data After Order', getDetailProductAfterOrder);
+
+    //         }
+    //     }
+    // } 
+    return { paymentResp }
+
+};
+
+const checkout = async (page, paymentName, productType, browser, urlKey, accessToken, location) => {
+
+    let start = performance.now();
+
+    // const clickCheckout = await page.waitForSelector(cartPage.checkoutButton, { visible: true });
+    const clickCheckout = await page.waitForSelector(cartPage.checkoutButton);
+
     await clickCheckout.click();
-    await page.waitForTimeout(4000);
+    await page.waitForTimeout(2000);
 
     // console.log(productType);
     if (productType === 'Suku Cadang') {
         await chooseShipment(page);
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(1000);
     }
     await choosePayment(page, paymentName, productType);
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1000);
 
-    const result = await bayarSekarang(page, paymentName, browser);
+    const result = await newBayarSekarang(page, paymentName, browser, urlKey, accessToken);
+    // console.log('order result', result);
 
-    return result;
+    let detailOrder='';
+    if (result.paymentResp.status === 200) {
+        let orderDetail = await fetch("https://api.astraotoshop.com/v1/order-service/public/orders/"+result.paymentResp.data.id, {
+            "headers": {
+              "accept": "application/json",
+              "accept-language": "undefined",
+              "authorization": "Bearer "+accessToken,
+              "content-type": "application/json",
+              "priority": "u=1, i",
+              "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+              "sec-ch-ua-mobile": "?0",
+              "sec-ch-ua-platform": "\"Windows\"",
+              "sec-fetch-dest": "empty",
+              "sec-fetch-mode": "cors",
+              "sec-fetch-site": "same-site"
+            },
+            "referrer": "https://astraotoshop.com/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+          });
+          detailOrder = await orderDetail.json();
+
+         
+    }
+
+
+
+    let end = performance.now();
+    let duration = await timeCalc(end, start);
+
+    return {
+        result: result,
+        detailOrder:detailOrder,
+        duration: duration
+    };
 
 };
 

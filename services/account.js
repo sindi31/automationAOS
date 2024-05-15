@@ -1,6 +1,9 @@
 import config from "../constanta/config.js";
+import { timeCalc } from "../utils/baseService.js";
 
 const checkPointHomepage = async (page) => {
+    let start = performance.now();
+
     let url = await page.url();
     if (url != config.URL) {
         await page.goto(config.URL);
@@ -11,9 +14,16 @@ const checkPointHomepage = async (page) => {
     await page.waitForSelector(".sc-w647qe-0.dUWxkQ", {
         visible: true
     });
-    const pointAfterOrder = await page.$eval(".sc-w647qe-0.dUWxkQ", el => el.textContent);
+    let pointAmount = await page.$eval(".sc-w647qe-0.dUWxkQ", el => el.textContent);
     // console.log(pointAfterOrder);
-    return pointAfterOrder;
+
+    let end = performance.now();
+    let duration = await timeCalc(end, start);
+
+    return {
+        point: pointAmount,
+        duration: duration
+    };
 
 };
 
@@ -32,12 +42,12 @@ const customerDashboard = async (page) => {
     const custMembership = await page.$eval(".sc-w647qe-0.jpxmvc", el => el.textContent);
 
     const customerDetail = {
-        name : custName,
+        name: custName,
         point: custPoin,
-        membership : custMembership
+        membership: custMembership
     };
     return customerDetail;
 
 };
 
-export {checkPointHomepage,customerDashboard};
+export { checkPointHomepage, customerDashboard };

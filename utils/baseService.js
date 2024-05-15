@@ -3,6 +3,9 @@ import puppeteer from "puppeteer-extra";
 import RecaptchaPlugin from "puppeteer-extra-plugin-recaptcha";
 import nodemailer from "nodemailer";
 import config from "../constanta/config.js";
+import fs from 'fs';
+import * as XLSX from 'xlsx';
+
 
 const responseUrl = async (page, xhr) => {
     let checkUrl = page.waitForResponse(
@@ -15,6 +18,7 @@ const responseUrl = async (page, xhr) => {
 
 
 const cleansingCart = async (page) => {
+    let start = performance.now();
     try {
         await page.goto(config.cartURL);
         await page.waitForTimeout(1000);
@@ -26,17 +30,23 @@ const cleansingCart = async (page) => {
             await page.waitForTimeout(1000);
             isEmptyCart = await page.$eval(cartPage.emptyCart, () => true).catch(() => false);
         }
-        await page.click(cartPage.backButton);
-        await page.waitForNavigation();
+        // await page.click(cartPage.backButton);
+        // await page.waitForNavigation();
 
+        let end = performance.now();
+        let duration = await timeCalc(end,start);
         return {
             status: 200,
-            message: 'Successfully cleansing product in cart'
+            message: 'Successfully cleansing product in cart',
+            duration: duration
         };
     } catch (error) {
+        let end = performance.now();
+        let duration = await timeCalc(end,start);
         return {
             status: 500,
             message: 'Something went wrong',
+            duration: duration,
             errorMsg: error
         };
     }
@@ -60,8 +70,10 @@ const getLocation = async (page) => {
 
 const getCurrentLocation = async (page) => {
 
+    let start = performance.now();
+
     await page.goto("chrome://settings/content/siteDetails?site=https%3A%2F%2Fastraotoshop.com");
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     await page.click("aria/Location");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
@@ -78,7 +90,7 @@ const getCurrentLocation = async (page) => {
     const useCurrentLoc = await page.waitForXPath("//button[normalize-space()='Gunakan lokasi saya saat ini']");
     await useCurrentLoc.click();
 
-    await page.waitForTimeout(3000)
+    await page.waitForTimeout(1000)
 
     const localStorage = await page.evaluate(() => localStorage.getItem('@location'));
     let repLocation = localStorage.replace(/(\w+):/g, `"$1":`);
@@ -91,15 +103,17 @@ const getCurrentLocation = async (page) => {
     await useCurrentLoc2.click();
     const getLocationResponse = await responseUrl(page, "location?latitude=" + latitude + "&longitude=" + longitude);
     // console.log(getLocationResponse);
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     if (getLocationResponse.status === 200) {
         await page.waitForTimeout(1000);
         const backToHome = (await page.$x(locationSelector.backButton))[0];
         await backToHome.click();
     }
+    let end = performance.now();
+    let duration = await timeCalc(end, start);
 
-    return { getLocationResponse, latitude, longitude }
+    return { getLocationResponse, latitude, longitude, duration }
 }
 
 const dateDifference = async (end, start) => {
@@ -114,7 +128,7 @@ const dateDifference = async (end, start) => {
 const sendMail = async (dataFile, dataFilePath, timeExecution) => {
     nodemailer.createTestAccount((err, account) => {
         let bodyHtml =
-        `
+            `
         <!DOCTYPE html>
         <html>
            <head>
@@ -164,7 +178,7 @@ const sendMail = async (dataFile, dataFilePath, timeExecution) => {
             from: 'sindi.wibowo31@gmail.com',
             to: 'nakana.lili31@gmail.com',
             cc: '',
-            subject: 'AOS Test Report ' ,
+            subject: 'AOS Test Report ',
             // text: 'Automate email for geckoboard report direct to you from Medvine Bot  🎉',
             // html: '<b>Automate email for geckoboard report  direct to you from Medvine Bot  🎉</b>',
             html: bodyHtml,
@@ -182,4 +196,48 @@ const sendMail = async (dataFile, dataFilePath, timeExecution) => {
     });
 }
 
-export { responseUrl, cleansingCart, getLocation, getCurrentLocation, dateDifference, sendMail }
+const readExcelFile = async (fileName) => {
+    // Read the Excel file
+    const fileContent = fs.readFileSync(fileName);
+    const workbook = XLSX.read(fileContent, { type: 'buffer' });
+
+    // Assuming there's only one sheet in the Excel file
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // Convert the sheet data to JSON
+    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+
+    let scenario = [];
+    let qty = [];
+    let urlKeySukuCadang = [];
+    let urlKeyLayananBengkel = [];
+    let urlKeyHomeservice = [];
+    let point = [];
+    let coupon = [];
+    let paymentMethod = [];
+
+
+    for (let index = 0; index < jsonData.length; index++) {
+        scenario[index] = jsonData[index].scenario ? jsonData[index].scenario.toString() : '';
+        qty[index] = jsonData[index].qty ? jsonData[index].qty.toString() : '';
+        urlKeySukuCadang[index] = jsonData[index].urlKey_SK ? jsonData[index].urlKey_SK.toString() : '';
+        urlKeyLayananBengkel[index] = jsonData[index].urlKey_LB ? jsonData[index].urlKey_LB.toString() : '';
+        urlKeyHomeservice[index] = jsonData[index].urlKey_HM ? jsonData[index].urlKey_HM.toString() : '';
+        point[index] = jsonData[index].pointAmount ? jsonData[index].pointAmount.toString() : '';
+        coupon[index] = jsonData[index].couponName ? jsonData[index].couponName : '';
+        paymentMethod[index] = jsonData[index].paymentMethod ? jsonData[index].paymentMethod : '';
+    }
+
+    // console.log(point);
+    return {scenario,qty,urlKeySukuCadang,urlKeyLayananBengkel,urlKeyHomeservice, point, coupon, paymentMethod };
+}
+
+const timeCalc= async (end,start) => {
+    let diff = (end-start)/1000;
+    let roundDiff = diff.toFixed(2);
+
+    return roundDiff;
+}
+export { responseUrl, cleansingCart, getLocation, getCurrentLocation, dateDifference, sendMail, readExcelFile, timeCalc }
