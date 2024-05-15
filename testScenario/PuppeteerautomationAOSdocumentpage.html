@@ -1,0 +1,914 @@
+
+        <!DOCTYPE html>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        
+        <head>
+           <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+           <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+           <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+           <title>Automation Testing Result</title>
+        </head>
+        <style>
+           @media print {
+              .pagebreak {
+                 page-break-after: always;
+              }
+        
+              /* page-break-after works, as well */
+           }
+        
+           body {
+              margin: 25px;
+              padding: 0;
+              color: #333;
+              font-style: normal;
+              font-family: 'Open Sans', sans-serif;
+              text-align: left;
+              background-color: white;
+           }
+        
+           table,
+           validation,
+           summary {
+              border-collapse: collapse;
+              width: 100%;
+           }
+        
+           .detail,
+           .flow {
+              font-size: 9px;
+              padding-top: 5px;
+           }
+        
+           .flow td {
+              padding-left: 5px;
+              padding-right: 5px;
+        
+           }
+        
+           .detail th {
+              font-size: 10px;
+              color: #333;
+              padding-left: 5px;
+           }
+        
+           .detail td {
+              text-indent: -5px;
+              padding-left: 10px;
+              padding-right: 5px;
+        
+           }
+        
+           .validation td {
+              text-align: center;
+              border: 1px solid lightgrey
+           }
+        
+           .summary td {
+              font-size: 9px;
+              vertical-align: top;
+              padding-left: 5px;
+           }
+        
+           .summary i {
+              font-size: 1.5em;
+           }
+        
+           .detail td,
+           .flow td,
+           .validation td {
+              vertical-align: top;
+           }
+        
+           .validation th,
+           .summary th {
+              font-size: 9px;
+              text-align: center;
+              background-color: lightgrey;
+              padding: 2px;
+              width: 33%;
+              border: 1px solid lightgrey
+           }
+        
+           .summary th {
+              padding-left: 5px;
+           }
+        
+           .fa-minus {
+              color: gold
+           }
+        
+           .fa-times {
+              color: red;
+           }
+        
+           .fa-check {
+              color: green;
+           }
+        </style>
+        
+        <body>
+           <tbody>
+              <!-- image-->
+              <div>
+                 <tr>
+                    <td>
+                       <img align="right" src="https://storageb2cprod.blob.core.windows.net/asset-b2c-prod/aop/logo-aop.png"
+                          alt="Astra Oto Shop" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none"
+                          width="140px" height="52" border="0">
+                    </td>
+                 </tr>
+              </div>
+              <!-- report-->
+              <div class="pagebreak">
+                 <tr>
+                    <td>
+                       <!-- summary -->
+                       <div class="detail">
+                          <p> The following is your automation test result summary: <br></p>
+                          <table>
+                             <tr>
+                                <td style="width: 10%;">Start Date</td>
+                                <td>: 15/05/2024, 11:21:57 WIB </td>
+                             </tr>
+                             <tr>
+                                <td>End Date</td>
+                                <td>: 15/05/2024, 11:24:46 WIB </td>
+                             </tr>
+                             <tr>
+                                <td>Duration</td>
+                                <td>: 2 minutes and 49 seconds </td>
+                             </tr>
+                          </table>
+                       </div>
+                       <!-- recap -->
+                       <div style="padding-top: 10px;">
+                          <table class="summary" style="border: 1px solid rgb(234, 234, 234);">
+                             <thead>
+                                <tr>
+                                   <th style="width: 60%;text-align: left;">Scenario</th>
+                                   <th colspan="2" style="width: 30%;text-align: left;">Process</th>
+                                   <th style="width: 10%;text-align: center;">Execution Time</th>
+                                </tr>
+                             </thead>
+                             <tbody>
+    
+            <tr>
+            <td rowspan="9" style="border-bottom: 1px solid rgb(234, 234, 234)">
+               <a href="#scenario-1"><b>#1 </b> Melakukan order produk Suku Cadang dilanjutkan proses pembatalan</a>
+            </td>
+            <td style="width: 20% ;">1. Login Account</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.39 s</i></td>
+         </tr>
+         <tr>
+            <td>2. Cleansing Product Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.08 s</i></td>
+         </tr>
+         <tr>
+            <td>3. Get Location</td>
+            <td style="text-align: center"><i class="fas fa-minus"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>0.00 s</i></td>
+
+         </tr>
+         <tr>
+            <td>4. Get Product Detail</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>1.29 s</i></td>
+         </tr>
+         <tr>
+            <td>5. Add to Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.06 s</i></td>
+         </tr>
+         <tr>
+            <td>6. Apply Point in Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>4.84 s</i></td>
+         </tr>
+         <tr>
+            <td>7. Apply Coupon in Cart</br></td>
+            <td style="text-align: center;"><i class="fas fa-times"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>4.38 s</i></td>
+         </tr>
+         <tr>
+            <td> 8. Order Process</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>27.10 s</i></td>
+         </tr>
+         <tr>
+            <td style="border-bottom: 1px solid rgb(234, 234, 234) "> 9. Cancelation Process </td>
+            <td style="text-align: center;border-bottom: 1px solid rgb(234, 234, 234);"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>5.77 s</i></td>
+         </tr>
+                
+            <tr>
+            <td rowspan="9" style="border-bottom: 1px solid rgb(234, 234, 234)">
+               <a href="#scenario-2"><b>#2 </b> Melakukan order produk Layanan Bengkel dilanjutkan proses pembatalan</a>
+            </td>
+            <td style="width: 20% ;">1. Login Account</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.39 s</i></td>
+         </tr>
+         <tr>
+            <td>2. Cleansing Product Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>1.59 s</i></td>
+         </tr>
+         <tr>
+            <td>3. Get Location</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>10.98 s</i></td>
+
+         </tr>
+         <tr>
+            <td>4. Get Product Detail</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>1.54 s</i></td>
+         </tr>
+         <tr>
+            <td>5. Add to Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.81 s</i></td>
+         </tr>
+         <tr>
+            <td>6. Apply Point in Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>4.80 s</i></td>
+         </tr>
+         <tr>
+            <td>7. Apply Coupon in Cart</br></td>
+            <td style="text-align: center;"><i class="fas fa-times"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>4.41 s</i></td>
+         </tr>
+         <tr>
+            <td> 8. Order Process</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>14.42 s</i></td>
+         </tr>
+         <tr>
+            <td style="border-bottom: 1px solid rgb(234, 234, 234) "> 9. Cancelation Process </td>
+            <td style="text-align: center;border-bottom: 1px solid rgb(234, 234, 234);"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>5.94 s</i></td>
+         </tr>
+                
+            <tr>
+            <td rowspan="9" style="border-bottom: 1px solid rgb(234, 234, 234)">
+               <a href="#scenario-3"><b>#3 </b> Melakukan order produk Homeservice dilanjutkan proses pembatalan</a>
+            </td>
+            <td style="width: 20% ;">1. Login Account</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.39 s</i></td>
+         </tr>
+         <tr>
+            <td>2. Cleansing Product Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>1.87 s</i></td>
+         </tr>
+         <tr>
+            <td>3. Get Location</td>
+            <td style="text-align: center"><i class="fas fa-minus"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>0.00 s</i></td>
+
+         </tr>
+         <tr>
+            <td>4. Get Product Detail</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>0.93 s</i></td>
+         </tr>
+         <tr>
+            <td>5. Add to Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>2.02 s</i></td>
+         </tr>
+         <tr>
+            <td>6. Apply Point in Cart</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>5.02 s</i></td>
+         </tr>
+         <tr>
+            <td>7. Apply Coupon in Cart</br></td>
+            <td style="text-align: center;"><i class="fas fa-times"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>4.41 s</i></td>
+         </tr>
+         <tr>
+            <td> 8. Order Process</td>
+            <td style="text-align: center"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>13.78 s</i></td>
+         </tr>
+         <tr>
+            <td style="border-bottom: 1px solid rgb(234, 234, 234) "> 9. Cancelation Process </td>
+            <td style="text-align: center;border-bottom: 1px solid rgb(234, 234, 234);"><i class="fas fa-check"></i></td>
+            <td style="text-align: center;font-size: 6px"><i>5.88 s</i></td>
+         </tr>
+                
+                     </tbody>
+                  </table>
+               </div>
+            </td>
+         </tr>
+      </div>
+
+        <div class="pagebreak">
+            <table class="flow">
+               <tr>
+                  <td colspan="4" style="font-size:14px;padding-bottom: 10px; padding-top:20px">
+                     <b id="scenario-1">SCENARIO 1 </b><br>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4">
+                     - Melakukan order produk <b><i>Suku Cadang</i></b> <br>
+                     - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:14px; text-align: right;">
+                     <b>#2242000117</b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:9px; text-align: right; ">
+                     Order date: 15/05/2024, 11:22:49 WIB
+                  </td>
+               </tr>
+            </table>
+            <table class="detail">
+               <!-- get location -->
+               <div>
+                  <tr>
+                     <th colspan="4"></th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%"></td>
+                     <td colspan="3"></td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td colspan="3"> </td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td colspan="3"></td>
+                  </tr>
+               </div>
+               <!-- customer & order -->
+               <div>
+                  <tr>
+                     <th colspan="2">Customer Information</th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">Name</td>
+                     <td style="width:40%">: Sindi Yulia</td>
+                  </tr>
+                  <tr>
+                     <td>Phone</td>
+                     <td>: 085156174151</td>
+                  </tr>
+                  <tr>
+                     <td> Address</td>
+                     <td colspan="3">: Jl Kemayoran Gempol RT 12 RW 4 No 09, Gg. Sejahtera  Kec. Kemayoran, Kota. KOTA ADM. JAKARTA PUSAT, Provinsi. DKI JAKARTA, 10630</td>
+                  </tr>
+               </div>
+               <!-- product -->
+               <div>
+                  <tr>
+                     <th colspan="2">Product Detail</th>
+                  </tr>
+                  <tr>
+                     <td>SKU</td>
+                     <td colspan="3">: H2-23100-K35-1200</td>
+                  </tr>
+                  <tr>
+                     <td>Name</td>
+                     <td colspan="3">: V BELT H2-23100-K35-1200</td>
+                  </tr>
+                  <tr>
+                     <td>Price</td>
+                     <td colspan="3">: 100320</td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td> </td>
+                  </tr>
+               </div>
+               <!-- coupon & point -->
+               <div>
+                  <tr>
+                     <th colspan="2">Coupon & Point Usage</th>
+                  </tr>
+                  <tr>
+                     <td>Coupon Code</td>
+                     <td colspan="3">: TESTING132 ( <i>Kupon Diskon tidak tersedia atau kupon sudah tidak berlaku</i> )</td>
+                  </tr>
+                  <tr>
+                     <td>Point</td>
+                     <td colspan="3">: Gunakan Semua ( <i>Successfully apply point</i> )</td>
+                  </tr>
+               </div>
+               <!-- order-->
+               <div>
+                  <tr>
+                     <th colspan="4">Order Detail</th>
+                  </tr>
+                  <tr>
+                     <td>Quantity</td>
+                     <td>: 1</td>
+                  </tr>
+                  <tr>
+                     <td>Payment Method</td>
+                     <td>: BRI VA</td>
+                  </tr>
+                  <tr>
+                     <td>Shipment Method</td>
+                     <td>: SICEPAT - SiCepat Besok Sampai Tujuan</td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-top: 25px; text-align: right;">
+                        <table>
+                           <tr>
+                              <td colspan="2" style="width: 50%;"></td>
+                              <td style="text-align: left">Subtotal</td>
+                              <td>100320</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left">Point</td>
+                              <td>- 50160</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td></td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left">Shipment Fee</td>
+                              <td> 14000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left">Shipment Disc.</td>
+                              <td>-14000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left;border-top: 1px solid grey"><b>Grand Total</b></td>
+                              <td style="border-top: 1px solid grey">50160</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+               <!-- validation-->
+               <div>
+                  <tr>
+                     <th colspan="4">Validation</th>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Point
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                              <td>646316</td>
+                              <td>596156</td>
+                              <td>646316</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Stock (QTY)
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                                <td>5</td>
+                                <td>4</td>
+                                <td>5</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+            </table>
+         </div>
+    
+        <div class="pagebreak">
+            <table class="flow">
+               <tr>
+                  <td colspan="4" style="font-size:14px;padding-bottom: 10px; padding-top:20px">
+                     <b id="scenario-2">SCENARIO 2 </b><br>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4">
+                     - Melakukan order produk <b><i>Layanan Bengkel</i></b> <br>
+                     - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:14px; text-align: right;">
+                     <b>#3242001319</b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:9px; text-align: right; ">
+                     Order date: 15/05/2024, 11:23:46 WIB
+                  </td>
+               </tr>
+            </table>
+            <table class="detail">
+               <!-- get location -->
+               <div>
+                  <tr>
+                     <th colspan="4">Get Location</th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">Latitude</td>
+                     <td colspan="3">: -6.2291968</td>
+                  </tr>
+                  <tr>
+                     <td>Longitude</td>
+                     <td colspan="3"> : 106.807296</td>
+                  </tr>
+                  <tr>
+                     <td>Nearest Place</td>
+                     <td colspan="3">: Senayan, Kec. Kebayoran Baru, KOTA ADM. JAKARTA SELATAN</td>
+                  </tr>
+               </div>
+               <!-- customer & order -->
+               <div>
+                  <tr>
+                     <th colspan="2">Customer Information</th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">Name</td>
+                     <td style="width:40%">: Cindy</td>
+                  </tr>
+                  <tr>
+                     <td>Phone</td>
+                     <td>: 087757921231</td>
+                  </tr>
+                  <tr>
+                     <td> </td>
+                     <td colspan="3"></td>
+                  </tr>
+               </div>
+               <!-- product -->
+               <div>
+                  <tr>
+                     <th colspan="2">Product Detail</th>
+                  </tr>
+                  <tr>
+                     <td>SKU</td>
+                     <td colspan="3">: MQ-11-GM5Z-3BMF</td>
+                  </tr>
+                  <tr>
+                     <td>Name</td>
+                     <td colspan="3">: Voucher Motoquick Aki ASPIRA GM5Z3B MF (5 Ah)  - Aki Motor untuk Motor Supra, Mio, Jupiter Z, Tornado, Vega & sejenisnya</td>
+                  </tr>
+                  <tr>
+                     <td>Price</td>
+                     <td colspan="3">: 178000</td>
+                  </tr>
+                  <tr>
+                     <td>Merchant</td>
+                     <td> : MOTOQUICK MAMPANG PRAPATAN 6</td>
+                  </tr>
+               </div>
+               <!-- coupon & point -->
+               <div>
+                  <tr>
+                     <th colspan="2">Coupon & Point Usage</th>
+                  </tr>
+                  <tr>
+                     <td>Coupon Code</td>
+                     <td colspan="3">: TESTING132 ( <i>Kupon Diskon tidak tersedia atau kupon sudah tidak berlaku</i> )</td>
+                  </tr>
+                  <tr>
+                     <td>Point</td>
+                     <td colspan="3">: Gunakan Semua ( <i>Successfully apply point</i> )</td>
+                  </tr>
+               </div>
+               <!-- order-->
+               <div>
+                  <tr>
+                     <th colspan="4">Order Detail</th>
+                  </tr>
+                  <tr>
+                     <td>Quantity</td>
+                     <td>: 1</td>
+                  </tr>
+                  <tr>
+                     <td>Payment Method</td>
+                     <td>: BRI VA</td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-top: 25px; text-align: right;">
+                        <table>
+                           <tr>
+                              <td colspan="2" style="width: 50%;"></td>
+                              <td style="text-align: left">Subtotal</td>
+                              <td>178000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left">Point</td>
+                              <td>- 89000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td></td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td> </td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td></td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left;border-top: 1px solid grey"><b>Grand Total</b></td>
+                              <td style="border-top: 1px solid grey">89000</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+               <!-- validation-->
+               <div>
+                  <tr>
+                     <th colspan="4">Validation</th>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Point
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                              <td>646316</td>
+                              <td>557316</td>
+                              <td>646316</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Stock (QTY)
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+            </table>
+         </div>
+    
+        <div class="pagebreak">
+            <table class="flow">
+               <tr>
+                  <td colspan="4" style="font-size:14px;padding-bottom: 10px; padding-top:20px">
+                     <b id="scenario-3">SCENARIO 3 </b><br>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4">
+                     - Melakukan order produk <b><i>Homeservice</i></b> <br>
+                     - Melakukan pembatalan order : <b><i>Klik Batalkan Pesanan</i></b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:14px; text-align: right;">
+                     <b>#3242001322</b>
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="4" style="font-size:9px; text-align: right; ">
+                     Order date: 15/05/2024, 11:24:32 WIB
+                  </td>
+               </tr>
+            </table>
+            <table class="detail">
+               <!-- get location -->
+               <div>
+                  <tr>
+                     <th colspan="4"></th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%"></td>
+                     <td colspan="3"></td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td colspan="3"> </td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td colspan="3"></td>
+                  </tr>
+               </div>
+               <!-- customer & order -->
+               <div>
+                  <tr>
+                     <th colspan="2">Customer Information</th>
+                  </tr>
+                  <tr>
+                     <td style="width:12%">Name</td>
+                     <td style="width:40%">: Sindi Yulia</td>
+                  </tr>
+                  <tr>
+                     <td>Phone</td>
+                     <td>: 085156174151</td>
+                  </tr>
+                  <tr>
+                     <td> Address</td>
+                     <td colspan="3">: Jl Kemayoran Gempol RT 12 RW 4 No 09, Gg. Sejahtera  Kec. Kemayoran, Kota. KOTA ADM. JAKARTA PUSAT, Provinsi. DKI JAKARTA, 10630</td>
+                  </tr>
+               </div>
+               <!-- product -->
+               <div>
+                  <tr>
+                     <th colspan="2">Product Detail</th>
+                  </tr>
+                  <tr>
+                     <td>SKU</td>
+                     <td colspan="3">: SD-550043469</td>
+                  </tr>
+                  <tr>
+                     <td>Name</td>
+                     <td colspan="3">: Voucher Shell Helix Astra Oil 10W30 4 Ltr + Pemasangan (Oli untuk Mobil Bensin)</td>
+                  </tr>
+                  <tr>
+                     <td>Price</td>
+                     <td colspan="3">: 314000</td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td> </td>
+                  </tr>
+               </div>
+               <!-- coupon & point -->
+               <div>
+                  <tr>
+                     <th colspan="2">Coupon & Point Usage</th>
+                  </tr>
+                  <tr>
+                     <td>Coupon Code</td>
+                     <td colspan="3">: TESTING132 ( <i>Kupon Diskon tidak tersedia atau kupon sudah tidak berlaku</i> )</td>
+                  </tr>
+                  <tr>
+                     <td>Point</td>
+                     <td colspan="3">: Gunakan Semua ( <i>Successfully apply point</i> )</td>
+                  </tr>
+               </div>
+               <!-- order-->
+               <div>
+                  <tr>
+                     <th colspan="4">Order Detail</th>
+                  </tr>
+                  <tr>
+                     <td>Quantity</td>
+                     <td>: 1</td>
+                  </tr>
+                  <tr>
+                     <td>Payment Method</td>
+                     <td>: BRI VA</td>
+                  </tr>
+                  <tr>
+                     <td></td>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-top: 25px; text-align: right;">
+                        <table>
+                           <tr>
+                              <td colspan="2" style="width: 50%;"></td>
+                              <td style="text-align: left">Subtotal</td>
+                              <td>314000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left">Point</td>
+                              <td>- 157000</td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td></td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td> </td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left"></td>
+                              <td></td>
+                           </tr>
+                           <tr>
+                              <td colspan="2"></td>
+                              <td style="text-align: left;border-top: 1px solid grey"><b>Grand Total</b></td>
+                              <td style="border-top: 1px solid grey">157000</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+               <!-- validation-->
+               <div>
+                  <tr>
+                     <th colspan="4">Validation</th>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Point
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                              <td>646316</td>
+                              <td>489316</td>
+                              <td>646316</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="padding-left: 20px;">
+                        Stock (QTY)
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table class="validation">
+                           <th>Before Order</th>
+                           <th>After Order</th>
+                           <th>After Cancel</th>
+                           <tr>
+                                <td>306672</td>
+                                <td>306671</td>
+                                <td>306672</td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </div>
+            </table>
+         </div>
+    
+   </tbody>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+   <script type="text/javascript" src="js/fullpage.js"></script>
+   <script type="text/javascript" src="js/examples.js"></script>
+</body>
+
+</html>
