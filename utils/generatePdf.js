@@ -47,17 +47,21 @@ const generatePdf = async (content, paymentMethod, pointAmount, couponUsed) => {
     let couponName = couponUsed[0] === '' ? '-Tidak Menggunakan Kupon' : '-kupon=' + couponUsed;
     let pointUsed = pointAmount === '' ? '-Tidak Menggunakan Poin' : '-poin=' + pointAmount;
 
-    await fs.access(config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10), function (err) {
+    let folder = config.BASE_DIRECTORY + new Date().toJSON().slice(0, 10);
+    console.log('folder', folder);
+    console.log('coba 1')
+    await fs.access(config.BASE_DIRECTORY + new Date().toJSON().slice(0, 10), function (err) {
         if (err && err.code === 'ENOENT') {
-            fs.mkdir(config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10), { recursive: true }, (err) => {
+            fs.mkdir(config.BASE_DIRECTORY + new Date().toJSON().slice(0, 10), { recursive: true }, (err) => {
                 if (err) throw err;
             })
         }
     });
-
-    pdfFilePath = config.BASE_DIRECTORY +new Date().toJSON().slice(0, 10)+'/' + 'Result-' + new Date().toJSON().slice(0, 10) +'-'+ paymentMethod.replace("/", "") +
+    console.log('coba 2')
+    pdfFilePath = config.BASE_DIRECTORY + new Date().toJSON().slice(0, 10) + '/' + 'Result-' + new Date().toJSON().slice(0, 10) + '-' + paymentMethod.replace("/", "") +
         pointUsed + couponName + '.pdf';
 
+    console.log('pdfFilePath', pdfFilePath)
     await page.setContent(content, {
         waitUntil: "networkidle0"
     });

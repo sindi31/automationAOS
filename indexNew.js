@@ -111,9 +111,9 @@ const oneFlowOrderCancel = async (qty, urlKeySukuCadang, urlKeyLayananBengkel, u
                 if (productType[i] === 'Suku Cadang') {
                     addToCartResponse = await addtoCart(page, qty, productType[i]);
                 } else if (productType[i] === 'Layanan Bengkel') {
-                    addToCartResponse = await addtoCart(page, qty, productType[i], data.isBookingDate, location.latitude, location.longitude, getProductResponse.result.data.id);
+                    addToCartResponse = await addtoCart(page, qty, productType[i], config.isBookingDate, location.latitude, location.longitude, getProductResponse.result.data.id);
                 } else {
-                    addToCartResponse = await addtoCart(page, qty, productType[i], data.isBookingDate);
+                    addToCartResponse = await addtoCart(page, qty, productType[i], config.isBookingDate);
                 }
 
 
